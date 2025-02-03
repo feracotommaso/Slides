@@ -1,0 +1,26 @@
+---
+title: "Slides"
+author: "Tommaso Feraco"
+#include-in-header: assets/header.html
+format: 
+  html:
+    self-contained: true
+    toc: true   
+    toc-depth: 3 
+    toc-expand: 3 
+    code-fold: false 
+    message: false
+#    css: "assets/custom.css"
+editor: visual
+---
+
+Here I publicly store presentations.
+
+-   **SEB skills and specific learning disabilities** - [html](https://feracotommaso.github.io/Slides/SebSldPresentation.html){target="_blank"} - [pdf](Slides/0.GettingStartedR.pdf){target="_blank"}
+-   
+
+::: {style="font-size:11px;"}
+GitHub repository: <https://github.com/feracotommaso/Slides>
+
+Many thanks to Filippo Gambarota and Enrico Toffalini for sharing their expertise in using GitHub, Quarto, and creating GitHub Pages websites.
+:::
