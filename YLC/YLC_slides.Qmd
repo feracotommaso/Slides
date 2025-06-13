@@ -1,0 +1,810 @@
+---
+title: "Social, emotional, and behavioral skills in adolescence"
+# subtitle: "Two cross-sectional studies in high schools"
+author:
+  - name: Tommaso Feraco
+    affiliations:
+      - University of Padova
+    email: tommaso.feraco@unipd.it
+    url: https://author.link/TommasoFeraco
+  # - name: Gerardo Pellegrino
+  #   affiliations:
+  #     - University of Padova
+  # - name: Barbara Carretti
+  #   affiliations:
+  #     - University of Padova
+  # - name: Chiara Meneghetti
+  #   affiliations:
+  #     - University of Padova
+institute: "**YLC, Evanston, June 26 2025**"
+include-in-header: assets/slidesheader.html
+format:
+  revealjs:
+    css: custom.css
+    theme: default
+    slide-number: c/t
+    self-contained: false
+    title-slide-attributes: 
+     data-background-image: ""
+     data-background-size: "contain"
+     data-background-opacity: "0.15"
+title-slide-contents: |
+  <div style="text-align: center; margin-top: 20px;">
+    <img src="figures/opendata.png" alt="Logo" style="width: 200px;">
+  </div>
+execute:
+  echo: false
+  output: true
+  cache: true
+  message: false
+  warning: false
+csl: nature.csl
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(lavaan)
+library(ggplot2)
+library(dplyr)
+library(kableExtra)
+
+library(psych)
+library(dplyr)
+library(tidyr)
+library(corrplot)
+library(readxl)
+library(forcats)
+library(janitor)
+library(careless)
+library(tibble)
+library(stringr)
+library(fmsb)
+library(performance)
+
+```
+
+## In case you want these slides
+
+![](figures/opendata.png){fig-align="center" width="65%"}
+
+
+## Who am I?
+
+::: columns
+::: {.column width="50%"}
+![](figures/myself.jpg){fig-align="left" width="35%"}
+
+-   Assistant Professor at the University of Padova
+-   [Psicostat](https://psicostat.dpss.psy.unipd.it/) core team member ![](figures/psicostatLogo.png){width="20px"}
+-   Memory & learning lab member
+:::
+
+::: {.column width="50%"}
+**What I do**
+
+-   SEB skills
+    -   Measurement
+    -   Change goals
+    -   Learning and achievement
+-   Methodology
+    -   Meta-research
+    -   Psychometrics
+    -   Statistical methods
+-   Geographical psychology
+:::
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+## Seed Questions
+
+1. From your expert perspective, what are the most critical elements that must be included in an
+interdisciplinary framework of youth leadership?
+2. Are there existing frameworks or theories from your field that could contribute to a more integrated
+understanding of youth leadership?
+3. From your expert perspective, what are the key questions that a science of youth leadership needs to
+address?
+4. How would you position yourself and your research within the framework below, and which specific
+components would you like to focus on/discuss during the workshop?
+
+<!-- --------------------------------------------------------------------- -->
+
+# Social, emotional, and behavioral skills
+
+-   Definition
+
+-   Key effects in adolescence \[leadership focus\]
+
+-   Change goals
+
+    -   Teachers' perspectives
+
+<!-- --------------------------------------------------------------------- -->
+
+## A definition (again)
+
+::: {style="font-size:25px;"}
+**Social, emotional, and behavioral skills** represent the abilities to establish and maintain social relationships, regulate emotions, and effectively manage behaviors toward goals and learning and mainly fall into five areas [@soto2021]:
+
+::: columns
+::: {.column width="45%"}
+-   **Self-management skills**
+-   **Social engagement skills**
+-   **Cooperation skills**
+-   **Innovation skills**
+-   **Emotional resilience skills**
+:::
+
+::: {.column width="55%"}
+![](figures/sebmodel.png){fig-align="right" width="85%"}
+:::
+:::
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+# Key effects in adolescence
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+<!-- --------------------------------------------------------------------- -->
+
+# Skill change
+
+```{r}
+agediff <- readxl::read_excel("data/agediff.xlsx")
+```
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## Do we observe normative changes in adolescence?
+
+::: columns
+::: {.column width="70%"}
+
+-   N = `r nrow(agediff)/5` (F = `r sum(agediff$Gender=="F")/5`)
+    -   IT = `r sum(agediff$Country=="Italian")/5`
+    -   US = `r sum(agediff$Country=="American")/5`
+    -   GER = `r sum(agediff$Country=="German")/5`
+-   Age = `r round(mean(agediff$Age),2)` (*sd* = `r round(sd(agediff$Age),2)`)
+    -   Range = `r paste0("[", min(agediff$Age),"; ",max(agediff$Age),"]")`
+-   Measures: BESSI-192
+
+:::
+
+::: {.column width="30%"}
+
+```{r, fig.align='right'}
+aGenderUrl <- "https://doi.org/10.3390/jintelligence11060118" 
+plot(qrcode::qr_code(aGenderUrl))
+```
+
+:::
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+## Results
+
+```{r}
+labels_seb <- c(
+  COD = "Cooperation",
+  ESD = "Emo. resilience",
+  IND = "Innovation",
+  SED = "Social engagement",
+  SMD = "Self-management",
+  SED_LS = "Leadership skills",
+  SED_ES = "Expressive skills",
+  SED_CS = "Conversation skills",
+  SED_PS = "Persuasive skills",
+  SED_ER = "Energy regulation skills"
+)
+
+agediff$skill <- labels_seb[match(agediff$variable, names(labels_seb))]
+
+p <- ggplot(agediff, aes(x = Age, y = value, color = Gender)) + 
+  geom_smooth(method = "loess", span = 1) +
+  # stat_summary(fun=mean, geom=c("point"), 
+  #              aes(group = Gender, color = Gender), size = 3) +
+  # stat_summary(fun.data=mean_se, geom=c("errorbar"), 
+  #              aes(group = Gender, color = Gender), width = .2, size = .7) +
+  scale_x_continuous(breaks=c(11:19)) +
+  facet_wrap(~skill,ncol=3) +
+  theme_bw(base_size = 20) +
+  ylab("t score")
+p
+```
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## A focus on self-reported leadership
+
+```{r}
+agediff_fac <- readxl::read_excel("data/agediff_facet.xlsx")
+```
+
+```{r}
+#| label: figs-sed-facets
+dsed <- subset(agediff_fac, select = c(Age,Gender,SED_LS:SED_ER,SED))
+dsed <- reshape2::melt(dsed, id.vars = c("Age","Gender"),
+                       value.name = "score",
+                       variable.name = "skills"
+                       )
+dsed$skills <- labels_seb[match(dsed$skills, names(labels_seb))]
+
+ggplot(dsed, aes(x = Age, y = score, color = Gender)) + 
+  geom_smooth(method = "loess", span = 1) +
+  # stat_summary(fun=mean, geom=c("point"), 
+  #              aes(group = Gender, color = Gender), size = 3) +
+  # stat_summary(fun.data=mean_se, geom=c("errorbar"), 
+  #              aes(group = Gender, color = Gender), width = .2, size = .7) +
+  scale_x_continuous(breaks=c(11:19)) +
+  facet_wrap(~skills, ncol = 3) +
+  theme_bw(base_size = 20) +
+  ylab("t score")
+
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+# Change goals and beliefs
+ 
+<!-- --------------------------------------------------------------------- -->
+
+## Method and people
+
+-   A brief definition of the trait/skill: "Whether someone 'tend'/'is capable of behaving' in a social, assertive, and energetic way[, when they want or need to do so]"
+
+    -   **Amount**: “How much would you like to increase your level of [skill/trait name]?”
+    -   **Feasibility**: “How much do you think you could increase your level of [skill/trait name] during the next year, if you tried to do so?”
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## A first study on college students ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
+
+```{r}
+d_college <- readxl::read_excel("data/goals_college.xlsx") # Long-format data for inferential analysis
+```
+
+
+::: columns
+::: {.column width="20%"}
+
+```{r, fig.align='left'}
+aGenderUrl <- "https://doi.org/10.3390/jintelligence11060118" 
+plot(qrcode::qr_code(aGenderUrl))
+```
+
+
+:::
+
+::: {.column width="70%"}
+-   N = `r nrow(d_college)/10` (F = `r sum(d_college$gender=="3")/10`, IT = `r sum(d_college$country=="IT")/5`, US = `r sum(d_college$country=="US")/5`) 
+-   Age = `r round(mean(d_college$age,na.rm=TRUE),2)` (*sd* = `r round(sd(d_college$age,na.rm=TRUE),2)` `r paste0("[", min(d_college$age, na.rm=TRUE),"; ",max(d_college$age,na.rm=TRUE),"]")`)
+
+:::
+:::
+<div style="margin-top: 0px;">
+```{r}
+dlPlot <- reshape2::melt(d_college, id.vars = c("country", "type", "facet", "macrofacet"),
+                         measure.vars = c("amount", "motivation", "feasibility", "implications"),
+                         variable.name = "Outcome", value.name = "Score")
+
+# Relabel levels of plot columns
+dlPlot$macrofacet <- factor(dlPlot$macrofacet, levels = c("agree", "consci", "emosta", "extrav", "open"), 
+                            labels = c("Cooperation / Agreeableness", "Self-management / Conscientiousness", 
+                                       "Emotional resilience / Emotional stability", 
+                                       "Social engagement / Extraversion", 
+                                       "Innovation / Openness"))
+dlPlot$country <- factor(dlPlot$country, levels = c("IT", "US"), 
+                         labels = c("Italy", "United States"))
+dlPlot$Outcome <- factor(dlPlot$Outcome, levels = c("amount", "feasibility", "motivation", "implications"), 
+                         labels = c("Amount", "Feasibility", "Motivation", "Impact"))
+
+# Plot all
+(Figure1 <- ggplot(dlPlot, aes(x = Score, y = macrofacet, fill = type)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "crossbar", 
+               width = 0.3, linewidth = .5, alpha = .8, 
+               position = position_dodge(width = 0.6)) +  # Separate types
+  # stat_summary(fun=mean, geom=c("point"), size = 2, alpha = .75,
+  #              aes(shape = country, color = type),
+  #              position = position_dodge(width = 0.4))+
+  facet_wrap(~Outcome) +
+  geom_hline(yintercept = c(1.5,2.5,3.5,4.5)) +
+  labs(color = "Category", fill = "Category", 
+       shape = "Country", 
+       x = "", y = element_blank()) +
+  #scale_colour_grey(start=0, end=0.5)+
+  # scale_fill_grey(start=0, end=0.5)+
+  theme_bw(base_size = 16) +
+  theme(legend.position="bottom",
+        strip.text = element_text(size = 16, 
+                                  color = "black"))
+)
+```
+</div>
+
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## Moving toward adolescents - Students, teachers, and parents opinions
+<!-- ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"} -->
+
+```{r}
+teachers <- readxl::read_excel("data/goals_teacherData.xlsx")
+teachers <- teachers[teachers$TIME_SUM > (median(teachers$TIME_SUM)/3),]
+teachers$sex <- ifelse(teachers$gender == "Female",1,
+                       ifelse(teachers$gender == "Male",0, 0.5))
+teachers$age <- 2025 - as.numeric(teachers$teacherYear)
+
+parents <- readxl::read_excel("data/goals_parentsData.xlsx")
+parents <- parents[parents$duration > (median(parents$duration)/3),]
+parents$parentAge <- ifelse(parents$parentAge>100,NA,parents$parentAge)
+
+students <- readxl::read_excel("data/goals_studentsData.xlsx")
+students <- students[students$duration > (median(students$duration)/3),]
+
+```
+
+```{r}
+tblPart <- data.frame(Students = c(nrow(students),sum(students$sex==1,na.rm=T),sum(students$sex==0,na.rm=T),
+                                   paste0(round(mean(students$age,na.rm=T),2),
+                                          " (",round(sd(students$age,na.rm=T),2),")")),
+                      Parents = c(nrow(parents),sum(parents$sex==1),sum(parents$sex==0),
+                                  paste0(round(mean(parents$parentAge,na.rm=T),2),
+                                          " (",round(sd(parents$parentAge,na.rm=T),2),")")),
+                      Teachers = c(nrow(teachers),sum(teachers$gender=="Female"),sum(teachers$gender=="Male"),
+                                   paste0(round(mean(2025 - as.numeric(teachers$teacherYear),na.rm=T),2),
+                                          " (",round(sd(2025 - as.numeric(teachers$teacherYear),na.rm=T),2),")"))
+                      )
+rownames(tblPart) <- c("N","Females","Males","Age")
+
+# Display the table
+kableExtra::kable(tblPart, align = "ccc")%>%
+  kable_classic()%>%
+  kable_styling(latex_options = "hold_position")
+```
+-   What are the opinions of high school students' about changing their traits or skills?
+-   What about their parents' and teachers' opinion about changing their (of the students) traits and skills
+
+<!-- --------------------------------------------------------------------- -->
+
+## ...the students
+
+```{r}
+# Long data by hand
+longStudents <- data.frame(
+  id = rep(1:nrow(students),10),
+  sex = rep(students$sex, 10),
+  age = rep(students$age, 10),
+  type = c(rep("trait", nrow(students)*5), rep("skill", nrow(students)*5)),
+  facet = rep(c("extrav", "agree", "consci", "emosta", "open",
+                "socEng", "cooper", "slfman", "emores", "innov"), each = nrow(students)),
+  macrofacet = c(rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(students)),
+                 rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(students))),
+  amount = c(students$Extrav_amount, students$Agree_amount, students$Consci_amount, students$EmoSta_amount, students$Open_amount,
+             students$SocEng_amount, students$Cooper_amount, students$SlfMan_amount, students$EmoRes_amount, students$Innov_amount),
+  feasibility = c(students$Extrav_feasibility, students$Agree_feasibility, students$Consci_feasibility, students$EmoSta_feasibility, students$Open_feasibility,
+                  students$SocEng_feasibility, students$Cooper_feasibility, students$SlfMan_feasibility, students$EmoRes_feasibility, students$Innov_feasibility)
+)
+
+longStudentsPlot <- reshape2::melt(longStudents, id.vars = c("type", "facet", "macrofacet"),
+                                  measure.vars = c("amount", "feasibility"),
+                                  variable.name = "Outcome", value.name = "Score")
+
+# Relabel levels of plot columns
+longStudentsPlot$macrofacet <- factor(longStudentsPlot$macrofacet, levels = c("agree", "consci", "emosta", "extrav", "open"),
+                                     labels = c("Cooperation / Agreeableness", "Self-management / Conscientiousness",
+                                                "Emotional resilience / Emotional stability", "Social engagement / Extraversion",
+                                                "Innovation / Openness"))
+longStudentsPlot$Outcome <- factor(longStudentsPlot$Outcome, levels = c("amount", "feasibility"),
+                                  labels = c("Amount", "Feasibility"))
+
+ggplot(longStudentsPlot, aes(x = Score, y = macrofacet, fill = type)) +
+    stat_summary(fun.data = mean_cl_boot, geom = "crossbar", 
+                 width = 0.3, linewidth = .5, alpha = .4, 
+                 position = position_dodge(width = 0.6)) +  # Separate types
+    stat_summary(fun=mean, geom=c("point"), size = 2, alpha = .75,
+                 aes(color = type),
+                 position = position_dodge(width = 0.6))+
+    facet_wrap(~Outcome) +
+    geom_hline(yintercept = c(1.5,2.5,3.5,4.5)) +
+    labs(color = "Category", fill = "Category", 
+         shape = "Country", 
+         x = "Score", y = element_blank()) +
+    theme_bw(base_size = 16) +
+    theme(legend.position="bottom",
+          strip.text = element_text(size = 16, 
+                                    color = "black"))
+```
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## ...their parents
+
+```{r}
+# Long data by hand
+longParents <- data.frame(
+  id = rep(1:nrow(parents),10),
+  sex = rep(parents$parentSex, 10),
+  age = rep(parents$parentAge, 10),
+  type = c(rep("trait", nrow(parents)*5), rep("skill", nrow(parents)*5)),
+  facet = rep(c("extrav", "agree", "consci", "emosta", "open",
+                "socEng", "cooper", "slfman", "emores", "innov"), each = nrow(parents)),
+  macrofacet = c(rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(parents)),
+                 rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(parents))),
+  amount = c(parents$Extrav_amount, parents$Agree_amount, parents$Consci_amount, parents$EmoSta_amount, parents$Open_amount,
+             parents$SocEng_amount, parents$Cooper_amount, parents$SlfMan_amount, parents$EmoRes_amount, parents$Innov_amount),
+  feasibility = c(parents$Extrav_feasibility, parents$Agree_feasibility, parents$Consci_feasibility, parents$EmoSta_feasibility, parents$Open_feasibility,
+                  parents$SocEng_feasibility, parents$Cooper_feasibility, parents$SlfMan_feasibility, parents$EmoRes_feasibility, parents$Innov_feasibility)
+)
+
+longParentsPlot <- reshape2::melt(longParents, id.vars = c("type", "facet", "macrofacet"),
+                                  measure.vars = c("amount", "feasibility"),
+                                  variable.name = "Outcome", value.name = "Score")
+
+# Relabel levels of plot columns
+longParentsPlot$macrofacet <- factor(longParentsPlot$macrofacet, levels = c("agree", "consci", "emosta", "extrav", "open"),
+                                     labels = c("Cooperation / Agreeableness", "Self-management / Conscientiousness",
+                                                "Emotional resilience / Emotional stability", "Social engagement / Extraversion",
+                                                "Innovation / Openness"))
+longParentsPlot$Outcome <- factor(longParentsPlot$Outcome, levels = c("amount", "feasibility"),
+                                  labels = c("Amount", "Feasibility"))
+
+ggplot(longParentsPlot, aes(x = Score, y = macrofacet, fill = type)) +
+    stat_summary(fun.data = mean_cl_boot, geom = "crossbar", 
+                 width = 0.3, linewidth = .5, alpha = .4, 
+                 position = position_dodge(width = 0.6)) +  # Separate types
+    stat_summary(fun=mean, geom=c("point"), size = 2, alpha = .75,
+                 aes(color = type),
+                 position = position_dodge(width = 0.6))+
+    facet_wrap(~Outcome) +
+    geom_hline(yintercept = c(1.5,2.5,3.5,4.5)) +
+    labs(color = "Category", fill = "Category", 
+         shape = "Country", 
+         x = "Score", y = element_blank()) +
+    theme_bw(base_size = 16) +
+    theme(legend.position="bottom",
+          strip.text = element_text(size = 16, 
+                                    color = "black"))
+```
+
+
+<!-- --------------------------------------------------------------------- -->
+
+## ...and their teachers
+
+```{r}
+# Long data by hand
+longTeacher <- data.frame(
+  id = rep(1:nrow(teachers),10),
+  sex = rep(teachers$gender, 10),
+  age = rep(teachers$age, 10),
+  type = c(rep("trait", nrow(teachers)*5), rep("skill", nrow(teachers)*5)),
+  facet = rep(c("extrav", "agree", "consci", "emosta", "open",
+                "socEng", "cooper", "slfman", "emores", "innov"), each = nrow(teachers)),
+  macrofacet = c(rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(teachers)),
+                 rep(c("extrav", "agree", "consci", "emosta", "open"), each = nrow(teachers))),
+  amount = c(teachers$Extrav_amount, teachers$Agree_amount, teachers$Consci_amount, teachers$EmoSta_amount, teachers$Open_amount,
+             teachers$SocEng_amount, teachers$Cooper_amount, teachers$SlfMan_amount, teachers$EmoRes_amount, teachers$Innov_amount),
+  feasibility = c(teachers$Extrav_feasibility, teachers$Agree_feasibility, teachers$Consci_feasibility, teachers$EmoSta_feasibility, teachers$Open_feasibility,
+                  teachers$SocEng_feasibility, teachers$Cooper_feasibility, teachers$SlfMan_feasibility, teachers$EmoRes_feasibility, teachers$Innov_feasibility)
+)
+
+longTeacher$sex <- ifelse(longTeacher$sex == "Female",1,
+                          ifelse(longTeacher$sex == "Male",0, 0.5))
+longTeacher$age <- as.numeric(longTeacher$age)
+
+longTeacherPlot <- reshape2::melt(longTeacher, id.vars = c("type", "facet", "macrofacet"),
+                                  measure.vars = c("amount", "feasibility"),
+                                  variable.name = "Outcome", value.name = "Score")
+
+# Relabel levels of plot columns
+longTeacherPlot$macrofacet <- factor(longTeacherPlot$macrofacet, levels = c("agree", "consci", "emosta", "extrav", "open"),
+                                     labels = c("Cooperation / Agreeableness", "Self-management / Conscientiousness",
+                                                "Emotional resilience / Emotional stability", "Social engagement / Extraversion",
+                                                "Innovation / Openness"))
+longTeacherPlot$Outcome <- factor(longTeacherPlot$Outcome, levels = c("amount", "feasibility"),
+                                  labels = c("Amount", "Feasibility"))
+
+ggplot(longTeacherPlot, aes(x = Score, y = macrofacet, fill = type)) +
+    stat_summary(fun.data = mean_cl_boot, geom = "crossbar", 
+                 width = 0.3, linewidth = .5, alpha = .4, 
+                 position = position_dodge(width = 0.6)) +  # Separate types
+    stat_summary(fun=mean, geom=c("point"), size = 2, alpha = .75,
+                 aes(color = type),
+                 position = position_dodge(width = 0.6))+
+    facet_wrap(~Outcome) +
+    geom_hline(yintercept = c(1.5,2.5,3.5,4.5)) +
+    labs(color = "Category", fill = "Category", 
+         shape = "Country", 
+         x = "Score", y = element_blank()) +
+    theme_bw(base_size = 16) +
+    theme(legend.position="bottom",
+          strip.text = element_text(size = 16, 
+                                    color = "black"))
+```
+<!-- --------------------------------------------------------------------- -->
+## ...what if we ask them whether they want to participate in a workshop?
+
+<!-- --------------------------------------------------------------------- -->
+## ...what if we ask them whether they want to participate in a workshop?
+
+
+```{r}
+parents <- readxl::read_excel("data/goals_parentsData.xlsx")
+parents <- parents[parents$duration > (median(parents$duration)/3),]
+parents$parentAge <- ifelse(parents$parentAge>100,NA,parents$parentAge)
+
+teachers <- readxl::read_excel("data/goals_teacherData.xlsx")
+teachers <- teachers[teachers$TIME_SUM > (median(teachers$TIME_SUM)/3),]
+teachers$sex <- ifelse(teachers$gender == "Female",1,
+                       ifelse(teachers$gender == "Male",0, 0.5))
+teachers$age <- 2025 - as.numeric(teachers$teacherYear)
+
+workdata <- data.frame(
+  workshopDomain = c(parents$workshopDomain,teachers$workshopDomain),
+  Workshop = c(parents$Workshop, teachers$Workshop),
+  workshopSkillTrait = c(parents$workshopSkillTrait,teachers$workshopSkillTrait),
+  group = c(rep("Parents",nrow(parents)),rep("Teachers",nrow(teachers)))
+)
+
+workdata <- workdata[is.na(workdata$workshopDomain)==FALSE,]
+
+ggplot(workdata, aes(x = workshopDomain, y = Workshop)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "crossbar",
+             width = 0.3, linewidth = .5, alpha = .4,
+             position = position_dodge(width = 0.4)) +
+  stat_summary(fun = mean, geom = "point", size = 2, alpha = .75,
+               aes(color = workshopSkillTrait),
+               position = position_dodge(width = 0.4)) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               aes(color = workshopSkillTrait),
+               width = 0.2, linewidth = 0.5, position = position_dodge(width = 0.4)) +
+  stat_summary(fun = mean, geom = "line", aes(group = workshopSkillTrait, color = workshopSkillTrait),
+               position = position_dodge(width = 0.4), linewidth = 0.5, alpha = 0.5) +
+  labs(color = "Category",
+       y = "Score", x = element_blank()) +
+  facet_wrap(~group) +
+  theme_bw(base_size = 12) +
+  theme(legend.position="right",
+        strip.text = element_text(size = 16,
+                                  color = "black"))
+
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+## More about teachers ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
+
+```{r}
+teach_eff <- readxl::read_excel("data/teachers_efficacy.xlsx")
+```
+
+```{r}
+create_summary_vector <- function(data) {
+  c(
+    "N (Females)" = paste0(nrow(data), " (",sum(data$Gender == 2, na.rm = TRUE),")"),
+    "Age (Mean)" = paste0(round(mean(data$Age, na.rm = TRUE), 2), 
+                          " (",round(sd(data$Age, na.rm = TRUE), 2) ,")"),
+    "Experience (Mean)" = if ("Experience" %in% names(data)) paste0(round(mean(data$Experience, na.rm = TRUE), 2),
+                                                                    " (",round(sd(data$Experience, na.rm = TRUE), 2) ,")")
+                                                                    else NA,
+    "Class Time (Mean)" = if ("Class_Time" %in% names(data)) paste0(round(mean(data$Class_Time, na.rm = TRUE), 2),
+                                                                    " (", round(sd(data$Class_Time, na.rm = TRUE), 2),")")
+                                                                    else NA,
+    # "Gender: Male (1)" = sum(data$Gender == 1, na.rm = TRUE),
+    # "Gender: Female (2)" = sum(data$Gender == 2, na.rm = TRUE),
+    # "Gender: Other (3-4)" = sum(data$Gender == 3, na.rm = TRUE) + sum(data$Gender == 4, na.rm = TRUE),
+    # "Grade: Kindergarten (1)" = sum(data$School_Grade == 1, na.rm = TRUE),
+    "Grade: Primary (2)" = sum(data$School_Grade == 2, na.rm = TRUE),
+    "Grade: Middle (3)" = sum(data$School_Grade == 3, na.rm = TRUE),
+    "Grade: High (4)" = sum(data$School_Grade == 4, na.rm = TRUE),
+    
+    "Role: Support (1)" = if ("Role" %in% names(data)) sum(data$Role == 1, na.rm = TRUE) else NA,
+    "Role: Curricular (2)" = if ("Role" %in% names(data)) sum(data$Role == 2, na.rm = TRUE) else NA
+    
+    # "Education: High school (1)" = if ("Education" %in% names(data)) sum(data$Education == 1, na.rm = TRUE) else NA,
+    # "Education: Bachelor (2)" = if ("Education" %in% names(data)) sum(data$Education == 2, na.rm = TRUE) else NA,
+    # "Education: Master (3)" = if ("Education" %in% names(data)) sum(data$Education == 3, na.rm = TRUE) else NA,
+    # "Education: PhD/2nd Level (4)" = if ("Education" %in% names(data)) sum(data$Education == 4, na.rm = TRUE) else NA,
+    # 
+    
+  )
+}
+
+# Create vertical data frame
+desc_dc <- create_summary_vector(teach_eff)
+
+summary_table_vertical <- tibble(
+  Variable = names(desc_dc),
+  `dc (BESSI Sample)` = desc_dc
+)
+colnames(summary_table_vertical) <- c("Variable","")
+
+kableExtra::kable(summary_table_vertical, align = "lc")%>%
+  kable_classic()%>%
+  kable_styling(latex_options = "hold_position")
+
+```
+
+
+All teachers read definitions of the 20 random SEB skills, and reported about their perceived confidence in teaching it to their students.
+
+<!-- --------------------------------------------------------------------- -->
+
+## ...results
+
+```{r}
+item_stats <- teach_eff %>%
+  summarise(across(
+    starts_with("BESSI_"),
+    list(
+      N    = ~sum(!is.na(.x)),
+      mean = ~mean(.x, na.rm = TRUE),
+      sd   = ~sd(.x,   na.rm = TRUE)
+    ),
+    .names = "{.col}_{.fn}"
+  )) %>%
+  # Pivot longer so we have one row per BESSI item
+  pivot_longer(
+    everything(),
+    names_to = c("item", ".value"),
+    names_pattern = "(BESSI_\\d+)_(.*)"
+  ) %>%
+  # Compute standard error
+  mutate(se = sd / sqrt(N))
+
+
+# ─── STEP A: Create lookup vectors “by position” ────────────────────────────────
+bessi_label_vec <- c(
+  "Task management",
+  "Time management",
+  "Detail management",
+  "Organizational skill",
+  "Responsibility",
+  "Consistency",
+  "Goal regulation",
+  "Rule-following",
+  "Decision-making",
+  "Leadership",
+  "Persuasive skill",
+  "Conversational skill",
+  "Expressive skill",
+  "Energy regulation",
+  "Teamwork",
+  "Capacity for trust",
+  "Perspective-taking",
+  "Social warmth",
+  "Ethical competence",
+  "Stress regulation",
+  "Capacity for optimism",
+  "Anger management",
+  "Confidence regulation",
+  "Impulse regulation",
+  "Abstract thinking",
+  "Creativity",
+  "Artistic skill",
+  "Cultural competence",
+  "Information processing",
+  "Adaptability",
+  "Independence",
+  "Self-reflection"
+)
+
+domain_vec <- c(
+  rep("Self-management",         9),  # BESSI_1–_9
+  rep("Social Engagement",       5),  # BESSI_10–_14
+  rep("Cooperation",             5),  # BESSI_15–_19
+  rep("Emotional resilience",    5),  # BESSI_20–_24
+  rep("Innovation",              5),  # BESSI_25–_29
+  rep("Compound",                3)   # BESSI_30–_32
+)
+
+
+# ─── STEP B: Attach label & domain via index ───────────────────────────────────
+item_stats <- item_stats %>%
+  mutate(
+    item    = as.character(item),
+    idx     = as.integer(stringr::str_remove(item, "^BESSI_")),
+    label   = bessi_label_vec[idx],
+    Domain  = domain_vec[idx],
+    Domain  = factor(Domain, levels = c(
+                "Self-management",
+                "Social Engagement",
+                "Cooperation",
+                "Emotional resilience",
+                "Innovation",
+                "Compound"
+              )),
+    label   = fct_reorder(label, mean)
+  ) %>%
+  select(-idx)
+
+
+# ─── STEP C: Define domain colors ───────────────────────────────────────────────
+domain_colors <- c( # Scusa, sono brutti ma si capisce meglio ;)
+  "Self-management"      = "red", # "#1b9e77",
+  "Social Engagement"    = "blue",  # "#d95f02",
+  "Cooperation"          = "green", # "#7570b3",
+  "Emotional resilience" = "black", # "#e7298a",
+  "Innovation"           = "pink", # "#66a61e",
+  "Compound"             = "#666666"
+)
+
+
+# ─── STEP D: Plot “mean ± 95% CI” for each BESSI item, colored by Domain ──────
+ggplot(item_stats, aes(y = label, x = mean, color = Domain)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(xmin = mean - sd, xmax = mean + sd), width = 0, linewidth = .02) +
+  geom_errorbar(
+    aes(
+      xmin = mean - 1.96 * se,
+      xmax = mean + 1.96 * se
+    ),
+    width = 0.2,
+    linewidth = 2
+  ) +
+#  coord_flip() +
+  scale_color_manual(values = domain_colors, name = "Domain") +
+  labs(
+    subtitle    = "Teacher Confidence Ratings on 32 SEB Skills",
+    #subtitle = "Mean ± 95% Confidence Interval by item, colored by domain",
+    x        = "",
+    y        = ""
+  ) +
+  # coord_cartesian(xlim = c(3,4.25)) +
+  #xlim(3, 4.25) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position  = "right"
+  )
+
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+
+# Ongoing projects
+
+<!-- --------------------------------------------------------------------- -->
+
+## Living systematic review and meta-analysis
+
+Unfortunately, at the skill-level (e.g., leadership, there are almost no data)
+
+<!-- --------------------------------------------------------------------- -->
+
+# References
+
+::: {#refs}
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+# Notes
+
+-   Clusters of characteristics
+    -   Not only dominance but
+    -   Organization, time-management... skills
+    -   Cognitive abilities/intelligence
+-   Formative models not reflective

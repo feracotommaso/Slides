@@ -1,0 +1,661 @@
+---
+title: "SEB skills Insegnanti"
+author: "Gerardo & Tommaso"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_depth: 3
+    toc_float: true
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+    latex_engine: xelatex
+---
+# Before starting 
+
+```{r Setup, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+
+R.Version()
+
+rm(list = ls()) 
+options(scipen = 999)
+
+```
+
+```{r Packages, message=FALSE, warning=FALSE, error=FALSE, include=FALSE}
+library(psych)
+library(dplyr)
+library(tidyr)
+library(corrplot)
+library(ggplot2)
+library(lavaan)
+library(lme4)
+library(readxl)
+library(forcats)
+library(janitor)
+library(careless)
+library(tibble)
+library(ordinal)
+library(stringr)
+library(fmsb)
+library(performance)
+```
+
+```{r Prepare the dataset, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# Upload dataset 
+d <- read_excel("InsegnantiSEB_data.xlsx", na = "NA")
+
+# Code for participants
+d <- d %>%
+  mutate(Code = paste0("Code", row_number()))
+
+# Convert questionnaire items to numeric
+d <- d %>%
+  dplyr::mutate(across(BESSI_1:Frequency_5, ~ as.numeric(.)))
+
+d$Age <- as.numeric(d$Age)
+d$Class_Time <- as.numeric(d$Class_Time)
+d$Experience <- as.numeric(d$Experience)
+d$Role <- as.factor(d$Role)
+
+# Dummy variable for Grade
+# Assuming your data frame is named `dcII` and has a column `School_Grade`
+d <- d %>%
+  mutate(
+    Grade_Kindergarten = ifelse(School_Grade == 1, 1, 0),
+    Grade_Primary      = ifelse(School_Grade == 2, 1, 0),
+    Grade_Middle       = ifelse(School_Grade == 3, 1, 0),
+    Grade_High         = ifelse(School_Grade == 4, 1, 0)
+  )
+
+
+```
+
+```{r Data cleaning $ Datasets creation, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# Dataset for screen classification 
+# Exlude participants with more than 12 NA in BESSI items
+dc <- d %>%
+  dplyr::mutate(bessi_na_count = rowSums(is.na(select(., BESSI_1:BESSI_32)))) %>%
+  filter(bessi_na_count <= 12) %>%
+  select(-bessi_na_count)
+
+# Careless responders
+# Function to compute longstring ignoring NAs
+compute_longstring <- function(vec) {
+  vec <- vec[!is.na(vec)]  # Remove NAs
+  if (length(vec) == 0) return(0)
+  
+  rle_res <- rle(vec)  # Run-length encoding
+  return(max(rle_res$lengths))  # Return longest streak of identical values
+}
+
+# Apply to BESSI_1 to BESSI_32
+dc$long_BESSI <- apply(dc[, paste0("BESSI_", 1:32)], 1, compute_longstring)
+# Flag: longstring > 15
+dc$long_BESSI_flag <- ifelse(dc$long_BESSI > 15, 1, 0)
+
+# Use careless::longstring for Efficacy items (no missing)
+# We considered also Efficacy items to have a double check 
+dc$long_Efficacy <- longstring(dc[, paste0("Efficacy_", 1:10)])
+dc$long_Efficacy_flag <- ifelse(dc$long_Efficacy > 7, 1, 0)
+
+# Combine flags
+dc$careless_flag <- dc$long_BESSI_flag + dc$long_Efficacy_flag
+# Report flagged participants
+table(dc$careless_flag)
+# Optional: Keep only participants with 0 flags
+dc <- dc %>% filter(careless_flag < 1)
+
+```
+
+```{r Create dataset for mixed model, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# No missing data in all blocks
+dcII <- dc %>%
+  filter(
+    if_all(c(Age:School_Grade, Efficacy_1:Role, Class_Time), ~ !is.na(.))
+  )
+
+# Check abnormal values in Class_Time
+dcII <- dcII %>%
+  filter(Class_Time <= 40)
+
+```
+
+```{r Scoring of questionnaires, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# Efficacy scoring (subscales and total)
+dcII <- dcII %>%
+  mutate(
+    Efficacy_Management = rowMeans(select(., Efficacy_1:Efficacy_4), na.rm = FALSE),
+    Efficacy_Engagement = rowMeans(select(., Efficacy_5:Efficacy_6), na.rm = FALSE),
+    Efficacy_Instruction = rowMeans(select(., Efficacy_7:Efficacy_10), na.rm = FALSE)
+  )
+
+dcII <- dcII %>%
+  mutate(
+    Efficacy_Total = rowMeans(select(., Efficacy_Management, Efficacy_Engagement, Efficacy_Instruction), na.rm = FALSE)
+  )
+
+# Commitment & Culture
+dcII <- dcII %>%
+  mutate(
+    Culture = rowMeans(select(., `Culture&Committment_1`, `Culture&Committment_2`), na.rm = FALSE),
+    Commitment = rowMeans(select(., `Culture&Committment_3`, `Culture&Committment_4`), na.rm = FALSE)
+  )
+
+# Frequency
+dcII <- dcII %>%
+  mutate(
+    Frequency = rowMeans(select(., Frequency_1:Frequency_5), na.rm = FALSE)
+  )
+
+```
+
+# Sample - Descriptive tables
+## Total sample for BESSI classification
+```{r Sample descriptive statistics, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+# Function to create a named vector of summaries
+create_summary_vector <- function(data) {
+  c(
+    "Age (Mean)" = round(mean(data$Age, na.rm = TRUE), 2),
+    "Age (SD)" = round(sd(data$Age, na.rm = TRUE), 2),
+    
+    "Experience (Mean)" = if ("Experience" %in% names(data)) round(mean(data$Experience, na.rm = TRUE), 2) else NA,
+    "Experience (SD)" = if ("Experience" %in% names(data)) round(sd(data$Experience, na.rm = TRUE), 2) else NA,
+    
+    "Class Time (Mean)" = if ("Class_Time" %in% names(data)) round(mean(data$Class_Time, na.rm = TRUE), 2) else NA,
+    "Class Time (SD)" = if ("Class_Time" %in% names(data)) round(sd(data$Class_Time, na.rm = TRUE), 2) else NA,
+    
+    "Gender: Male (1)" = sum(data$Gender == 1, na.rm = TRUE),
+    "Gender: Female (2)" = sum(data$Gender == 2, na.rm = TRUE),
+    "Gender: Non-binary (3)" = sum(data$Gender == 3, na.rm = TRUE),
+    "Gender: Not disclosed (4)" = sum(data$Gender == 4, na.rm = TRUE),
+    
+    "Grade: Kindergarten (1)" = sum(data$School_Grade == 1, na.rm = TRUE),
+    "Grade: Primary (2)" = sum(data$School_Grade == 2, na.rm = TRUE),
+    "Grade: Middle (3)" = sum(data$School_Grade == 3, na.rm = TRUE),
+    "Grade: High (4)" = sum(data$School_Grade == 4, na.rm = TRUE),
+    
+    "Education: High school (1)" = if ("Education" %in% names(data)) sum(data$Education == 1, na.rm = TRUE) else NA,
+    "Education: Bachelor (2)" = if ("Education" %in% names(data)) sum(data$Education == 2, na.rm = TRUE) else NA,
+    "Education: Master (3)" = if ("Education" %in% names(data)) sum(data$Education == 3, na.rm = TRUE) else NA,
+    "Education: PhD/2nd Level (4)" = if ("Education" %in% names(data)) sum(data$Education == 4, na.rm = TRUE) else NA,
+    
+    "Role: Support (1)" = if ("Role" %in% names(data)) sum(data$Role == 1, na.rm = TRUE) else NA,
+    "Role: Curricular (2)" = if ("Role" %in% names(data)) sum(data$Role == 2, na.rm = TRUE) else NA
+  )
+}
+
+# Create vertical data frame
+desc_dc <- create_summary_vector(dc)
+desc_dcII <- create_summary_vector(dcII)
+
+summary_table_vertical <- tibble(
+  Variable = names(desc_dc),
+  `dc (BESSI Sample)` = desc_dc,
+  `dcII (Complete Sample)` = desc_dcII
+)
+
+knitr::kable(summary_table_vertical, digits = 2, caption = "Descriptive statistics of the sample")
+```
+
+## Descriptive for all variable
+```{r Variables descriptive statistics, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+# Vector of variable names
+agg_vars <- c("Efficacy_Management", "Efficacy_Engagement", "Efficacy_Instruction",
+              "Efficacy_Total", "Culture", "Commitment", "Frequency")
+
+# Descriptive stats table
+desc_table <- dcII %>%
+  select(all_of(agg_vars)) %>%
+  summarise(across(everything(), list(
+    N = ~sum(!is.na(.)),
+    Mean = ~mean(., na.rm = TRUE),
+    SD = ~sd(., na.rm = TRUE),
+    Skewness = ~psych::skew(., na.rm = TRUE),
+    Kurtosis = ~psych::kurtosi(., na.rm = TRUE),
+    Min = ~min(., na.rm = TRUE),
+    Max = ~max(., na.rm = TRUE)
+  ), .names = "{.col}_{.fn}")) %>%
+  pivot_longer(everything(),
+               names_to = c("Variable", ".value"),
+               names_pattern = "(.*)_(.*)") %>%
+  relocate(Variable)
+
+# Print in markdown-friendly format
+knitr::kable(desc_table, digits = 2, caption = "Descriptive statistics for all variables")
+
+```
+
+# SEB skills classification
+
+At the facet level, we classify the 32 skills based on teachers' confidence ratings, providing a classification of skills that teachers feel more/less confident about teaching.
+
+```{r SEB skills descriptives, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+bessi_label_vec <- c(
+  "Gestione dei compiti",
+  "Gestione del tempo",
+  "Attenzione ai dettagli",
+  "Organizzazione degli spazi e dei materiali",
+  "Gestione degli impegni",
+  "Costanza",
+  "Definizione degli obiettivi",
+  "Aderenza alle regole",
+  "Prendere decisioni",
+  "Leadership",
+  "Persuasione",
+  "Fare conversazione",
+  "Comunicazione",
+  "Regolazione delle energie",
+  "Collaborazione",
+  "Sapersi fidare e saper perdonare",
+  "Immedesimazione",
+  "Accoglienza emotiva",
+  "Affabilità e cordialità",
+  "Gestione dello stress",
+  "Ottimismo",
+  "Gestione della rabbia",
+  "Autostima",
+  "Resistere alle tentazioni",
+  "Pensiero astratto",
+  "Creatività",
+  "Espressione artistica",
+  "Interculturalità",
+  "Elaborazione delle informazioni",
+  "Adattabilità",
+  "Autonomia",
+  "Introspezione"
+)
+
+# Create the lookup table
+item_labels <- tibble(
+  item = paste0("BESSI_", 1:32),
+  skill = bessi_label_vec
+)
+
+item_stats <- dc %>%
+  select(BESSI_1:BESSI_32) %>%
+  summarise(across(everything(),
+                   list(
+                     n           = ~sum(!is.na(.)),
+                     missing_pct = ~round(mean(is.na(.)) * 100, 2),
+                     mean        = ~mean(., na.rm = TRUE),
+                     sd          = ~sd(., na.rm = TRUE),
+                     min         = ~min(., na.rm = TRUE),
+                     max         = ~max(., na.rm = TRUE)
+                   ),
+                   .names = "{.col}_{.fn}")) %>%
+  pivot_longer(everything(),
+               names_to = c("item", ".value"),
+               names_pattern = "(BESSI_\\d+)_(.*)") %>%
+  # Compute SE and 95% CI
+  mutate(
+    se       = sd / sqrt(n),
+    ci_lower = mean - 1.96 * se,
+    ci_upper = mean + 1.96 * se
+  ) %>%
+  # Join with skill labels
+  left_join(item_labels, by = "item") %>%
+  # Rank items by mean confidence
+  arrange(desc(mean)) %>%
+  mutate(rank = row_number())
+
+knitr::kable(item_stats, digits = 2, caption = "SEB skills ranking")
+
+```
+
+```{r Plot the ranking, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+item_stats <- dcII %>%
+  summarise(across(
+    starts_with("BESSI_"),
+    list(
+      N    = ~sum(!is.na(.x)),
+      mean = ~mean(.x, na.rm = TRUE),
+      sd   = ~sd(.x,   na.rm = TRUE)
+    ),
+    .names = "{.col}_{.fn}"
+  )) %>%
+  # Pivot longer so we have one row per BESSI item
+  pivot_longer(
+    everything(),
+    names_to = c("item", ".value"),
+    names_pattern = "(BESSI_\\d+)_(.*)"
+  ) %>%
+  # Compute standard error
+  mutate(se = sd / sqrt(N))
+
+
+# ─── STEP A: Create lookup vectors “by position” ────────────────────────────────
+bessi_label_vec <- c(
+  "Gestione dei compiti",
+  "Gestione del tempo",
+  "Attenzione ai dettagli",
+  "Organizzazione degli spazi e dei materiali",
+  "Gestione degli impegni",
+  "Costanza",
+  "Definizione degli obiettivi",
+  "Aderenza alle regole",
+  "Prendere decisioni",
+  "Leadership",
+  "Persuasione",
+  "Fare conversazione",
+  "Comunicazione",
+  "Regolazione delle energie",
+  "Collaborazione",
+  "Sapersi fidare e saper perdonare",
+  "Immedesimazione",
+  "Accoglienza emotiva",
+  "Affabilità e cordialità",
+  "Gestione dello stress",
+  "Ottimismo",
+  "Gestione della rabbia",
+  "Autostima",
+  "Resistere alle tentazioni",
+  "Pensiero astratto",
+  "Creatività",
+  "Espressione artistica",
+  "Interculturalità",
+  "Elaborazione delle informazioni",
+  "Adattabilità",
+  "Autonomia",
+  "Introspezione"
+)
+
+domain_vec <- c(
+  rep("Self-management",         9),  # BESSI_1–_9
+  rep("Social Engagement",       5),  # BESSI_10–_14
+  rep("Cooperation",             5),  # BESSI_15–_19
+  rep("Emotional resilience",    5),  # BESSI_20–_24
+  rep("Innovation",              5),  # BESSI_25–_29
+  rep("Compound",                3)   # BESSI_30–_32
+)
+
+
+# ─── STEP B: Attach label & domain via index ───────────────────────────────────
+item_stats <- item_stats %>%
+  mutate(
+    item    = as.character(item),
+    idx     = as.integer(str_remove(item, "^BESSI_")),
+    label   = bessi_label_vec[idx],
+    Domain  = domain_vec[idx],
+    Domain  = factor(Domain, levels = c(
+                "Self-management",
+                "Social Engagement",
+                "Cooperation",
+                "Emotional resilience",
+                "Innovation",
+                "Compound"
+              )),
+    label   = fct_reorder(label, mean)
+  ) %>%
+  select(-idx)
+
+
+# ─── STEP C: Define domain colors ───────────────────────────────────────────────
+domain_colors <- c( # Scusa, sono brutti ma si capisce meglio ;)
+  "Self-management"      = "red", # "#1b9e77",
+  "Social Engagement"    = "blue",  # "#d95f02",
+  "Cooperation"          = "green", # "#7570b3",
+  "Emotional resilience" = "black", # "#e7298a",
+  "Innovation"           = "pink", # "#66a61e",
+  "Compound"             = "#666666"
+)
+
+
+# ─── STEP D: Plot “mean ± 95% CI” for each BESSI item, colored by Domain ──────
+ggplot(item_stats, aes(y = label, x = mean, color = Domain)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(xmin = mean - sd, xmax = mean + sd), width = 0, linewidth = .02) +
+  geom_errorbar(
+    aes(
+      xmin = mean - 1.96 * se,
+      xmax = mean + 1.96 * se
+    ),
+    width = 0.2,
+    linewidth = 2
+  ) +
+#  coord_flip() +
+  scale_color_manual(values = domain_colors, name = "Domain") +
+  labs(
+    title    = "Teacher Confidence Ratings on 32 SEB Skills",
+    subtitle = "Mean ± 95% Confidence Interval by item, colored by domain",
+    x        = "Skill facets",
+    y        = "Score"
+  ) +
+  # coord_cartesian(xlim = c(3,4.25)) +
+  #xlim(3, 4.25) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position  = "bottom"
+  )
+```
+
+```{r Plot the ranking - Standard deviation, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+ggplot(item_stats, aes(x = label, y = mean, color = Domain)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+  coord_flip() +
+  scale_color_manual(values = domain_colors, name = "Domain") +
+  labs(
+    title    = "Teacher Confidence Ratings on 32 SEB Skills",
+    subtitle = "Mean ± SD by item, colored by domain",
+    x        = "Skill facets",
+    y        = "Score"
+  ) +
+  ylim(2, 5) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.position  = "bottom"
+  )
+
+```
+
+```{r Plot the spider, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+# Define your custom grade colors here:
+grade_colors <- c(
+  "Grade 1" = "#1b9e77",
+  "Grade 2" = "#d95f02",
+  "Grade 3" = "#7570b3",
+  "Grade 4" = "#e7298a"
+  # Add more if needed
+)
+
+# Ensure bessi_label_vec is available
+bessi_label_vec <- c(
+  "Gestione dei compiti", "Gestione del tempo", "Attenzione ai dettagli", 
+  "Organizzazione degli spazi e dei materiali", "Gestione degli impegni", 
+  "Costanza", "Definizione degli obiettivi", "Aderenza alle regole", 
+  "Prendere decisioni", "Leadership", "Persuasione", "Fare conversazione", 
+  "Comunicazione", "Regolazione delle energie", "Collaborazione", 
+  "Sapersi fidare e saper perdonare", "Immedesimazione", "Accoglienza emotiva", 
+  "Affabilità e cordialità", "Gestione dello stress", "Ottimismo", 
+  "Gestione della rabbia", "Autostima", "Resistere alle tentazioni", 
+  "Pensiero astratto", "Creatività", "Espressione artistica", 
+  "Interculturalità", "Elaborazione delle informazioni", "Adattabilità", 
+  "Autonomia", "Introspezione"
+)
+
+# STEP 1: Compute means by grade and item
+item_means_by_grade <- dcII %>%
+  pivot_longer(cols = starts_with("BESSI_"), names_to = "item", values_to = "score") %>%
+  group_by(School_Grade, item) %>%
+  summarise(mean = mean(score, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(names_from = item, values_from = mean)
+
+# STEP 2: Prep radar format
+radar_df <- as.data.frame(item_means_by_grade)
+rownames(radar_df) <- paste("Grade", radar_df$School_Grade)
+radar_df$School_Grade <- NULL
+
+# Reorder columns by BESSI_1 to BESSI_32
+radar_df <- radar_df[, paste0("BESSI_", 1:32)]
+
+# Use custom labels for each item
+colnames(radar_df) <- bessi_label_vec
+
+# Add max and min rows
+max_vals <- rep(5, 32)
+min_vals <- rep(2, 32)
+radar_ready <- rbind(max_vals, min_vals, radar_df)
+
+# STEP 3: Plot
+# Set up plotting space (1 plot with room for legend)
+# Save current graphic settings
+old_par <- par(no.readonly = TRUE)
+
+# Adjust margins to make space for title and legend
+par(mar = c(1, 1, 3, 1))  # top margin increased for title
+
+# Define your custom grade labels
+grade_labels <- c(
+  "Grade 1" = "Kindergarten",
+  "Grade 2" = "Primary School",
+  "Grade 3" = "Middle School",
+  "Grade 4" = "High School"
+)
+
+# Draw radar chart
+# Draw radar chart
+radarchart(radar_ready,
+           pcol = grade_colors[rownames(radar_df)],
+           plwd = 2,
+           plty = 1,
+           cglcol = "grey80",
+           cglty = 1,
+           axislabcol = "black",
+           vlcex = 0.6,
+           title = "SEB Skills by Grade")
+
+# Add legend with custom labels
+legend("bottomright",
+       legend = grade_labels[rownames(radar_df)],  # custom names here
+       col = grade_colors[rownames(radar_df)],
+       lty = 1,
+       lwd = 2,
+       bty = "n",
+       cex = 0.8)
+
+# Restore original plotting parameters
+par(old_par)
+```
+
+```{r Table by grade, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+seb_bygrade <- dcII %>%
+  pivot_longer(cols = starts_with("BESSI_"), names_to = "item", values_to = "score") %>%
+  mutate(
+    idx = as.integer(str_remove(item, "^BESSI_")),
+    skill_label = bessi_label_vec[idx]
+  ) %>%
+  group_by(idx, skill_label, School_Grade) %>%
+  summarise(
+    mean = round(mean(score, na.rm = TRUE), 2),
+    sd   = round(sd(score, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(mean_sd = paste0(mean, " (", sd, ")")) %>%
+  select(idx, skill_label, School_Grade, mean_sd) %>%
+  pivot_wider(names_from = School_Grade, values_from = mean_sd) %>%
+  arrange(idx) %>%  # <<< preserves original item order
+  select(-idx)
+
+# Rename columns with grade labels
+colnames(seb_bygrade) <- c(
+  "Skill",
+  "Kindergarten (1)", "Primary (2)", "Middle (3)", "High (4)"
+)
+
+knitr::kable(seb_bygrade , digits = 2, caption = "SEB skills ranking, divided by Grade")
+
+```
+
+# Mixed model
+We will analyze teacher confidence in teaching SEB skills at the item level. A Cumulative Link Mixed Model will be used to test whether teacher self-efficacy and school culture predict confidence in teaching SEB skills after controlling for demographic characteristics of teachers (e.g., years of experience, school grade, average number of hours per class). Participants and items (single skills) will be included as random effects. 
+
+We will evaluate whether including skill domains as predictors improves model fit. This approach allows us to explore whether teacher confidence varies systematically across domains.
+```{r Dataset long format, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# Reshape BESSI items into long format
+dcII_long <- dcII %>%
+  pivot_longer(
+    cols = starts_with("BESSI_"),
+    names_to = "Item",
+    values_to = "Score"
+  )
+
+dcII_long$Score <- as.factor(dcII_long$Score)
+# Add domain based on BESSI item number
+dcII_long <- dcII_long %>%
+  mutate(
+    Domain = case_when(
+      Item %in% paste0("BESSI_", 1:9)   ~ "SMD",   # Self-management
+      Item %in% paste0("BESSI_", 10:14) ~ "SED",   # Social Engagement
+      Item %in% paste0("BESSI_", 15:19) ~ "COD",   # Cooperation
+      Item %in% paste0("BESSI_", 20:24) ~ "ERD",   # Emotional Resilience
+      Item %in% paste0("BESSI_", 25:29) ~ "IND",   # Innovation
+      Item %in% paste0("BESSI_", 30:32) ~ "COMP"   # Compound
+    )
+  )
+
+# Delete rows with no scores
+dcII_long  <- dcII_long [!is.na(dcII_long $Score), ]
+```
+
+```{r Cumulative Link Mixed Model, message=FALSE, warning=FALSE, error=FALSE, include = TRUE, cache=TRUE}
+# I CHANGED THE LINK TO PROBIT (LATENT SCORE) E AGGIUNTO LA CACHE
+# Model comparison
+mod0 <- clmm(Score ~ (1 | Code) + (1 | Item), data = dcII_long, link = "probit")
+mod1 <- clmm(Score ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + (1 | Code) + (1 | Item), data = dcII_long, link = "probit")
+mod2 <- clmm(Score ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + Efficacy_Total + Culture + (1 | Code) + (1 | Item), data = dcII_long, link = "probit")
+mod3 <- clmm(Score ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + Efficacy_Total + Culture + Domain + (1 | Code) + (1 | Item), data = dcII_long, link = "probit")
+
+anova(mod0, mod1, mod2, mod3)
+AIC(mod0, mod1, mod2, mod3)
+BIC(mod0, mod1, mod2, mod3)
+
+# Examine parameters
+summary(mod1)
+summary(mod2) # best model
+```
+```{r Prove senza clm per velocizzare, include=FALSE}
+library(lme4)
+# I CHANGED THE LINK TO PROBIT (LATENT SCORE) E AGGIUNTO LA CACHE
+# Model comparison
+mod0 <- lmer(as.numeric(Score) ~ (1 | Code) + (1 | Item), data = dcII_long)
+mod1 <- lmer(as.numeric(Score) ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + (1 | Code) + (1 | Item), data = dcII_long)
+mod2 <- lmer(as.numeric(Score) ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + Culture + (1 | Code) + (1 | Item), data = dcII_long)
+mod3 <- lmer(as.numeric(Score) ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + Culture + Domain + (1 | Code) + (1 | Item), data = dcII_long)
+
+anova(mod0, mod1, mod2, mod3)
+AIC(mod0, mod1, mod2, mod3)
+BIC(mod0, mod1, mod2, mod3)
+
+# Examine parameters
+summary(mod1)
+summary(mod2) # best model
+
+
+modx <- lmer(as.numeric(Score) ~ Role + Grade_Primary + Grade_Middle + Grade_High + Experience + Class_Time + Domain + (1 | Code) + (1 | Item), data = dcII_long)
+summary(modx)
+em <- emmeans::emmeans(modx, ~ Domain)
+emmeans::contrast(em, method = "pairwise")
+
+```
+
+
+
+```{r Cumulative Link Mixed Model - Checks, message=FALSE, warning=FALSE, error=FALSE, include = FALSE}
+# Some additional model checks
+
+performance::multicollinearity(mod2) 
+
+```
+
+# Exploratory correlations
+We explore the correlation between self-confidence in SEB skills teaching (by averaging all BESSI items) and committment in improving the ability to teach SEB skills. 
+```{r Correlations, message=FALSE, warning=FALSE, error=FALSE, include = TRUE}
+dcII <- dcII %>%
+  mutate(BESSI_Total = rowMeans(select(., BESSI_1:BESSI_32), na.rm = TRUE))
+
+cor.test(dcII$BESSI_Total, dcII$Commitment)
+```
