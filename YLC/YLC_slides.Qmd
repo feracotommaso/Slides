@@ -68,6 +68,8 @@ library(performance)
 
 ## Who am I?
 
+::: {style="font-size:30px;"}
+
 ::: columns
 ::: {.column width="50%"}
 ![](figures/myself.jpg){fig-align="left" width="35%"}
@@ -90,6 +92,8 @@ library(performance)
     -   Statistical methods
 -   Geographical psychology
 :::
+:::
+
 :::
 
 <!-- --------------------------------------------------------------------- -->
@@ -257,6 +261,8 @@ ggplot(dsed, aes(x = Age, y = score, color = Gender)) +
 
 ## A first study on college students @feraco2025DifferencesChangeGoals ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
 
+::: {style="font-size:25px;"}
+
 ```{r}
 d_college <- readxl::read_excel("data/goals_college.xlsx") # Long-format data for inferential analysis
 ```
@@ -318,10 +324,13 @@ dlPlot$Outcome <- factor(dlPlot$Outcome, levels = c("amount", "feasibility", "mo
 ```         
 Feraco, Hudson & Soto (2025) Personality and Individual Differences
 ```
+:::
 
 <!-- --------------------------------------------------------------------- -->
 
 ## Moving toward adolescents - Students, teachers, and parents opinions ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
+
+::: {style="font-size:25px;"}
 
 ```{r}
 teachers <- readxl::read_excel("data/goals_teacherData.xlsx")
@@ -365,6 +374,7 @@ kableExtra::kable(tblPart, align = "ccc")%>%
 ```         
 Feraco, Jach ... & Soto (in prep)
 ```
+:::
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -577,6 +587,8 @@ ggplot(workdata, aes(x = workshopDomain, y = Workshop)) +
 
 ## More about teachers ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
 
+::: {style="font-size:25px;"}
+
 ```{r}
 teach_eff <- readxl::read_excel("data/teachers_efficacy.xlsx")
 ```
@@ -631,12 +643,13 @@ kableExtra::kable(summary_table_vertical, align = "lc")%>%
 ```         
 Pellegrino ... & Feraco (in prep)
 ```
+:::
 
 <!-- --------------------------------------------------------------------- -->
 
 ## ...results
 
-All teachers read definitions of the 20 random SEB skills, and reported about their perceived confidence in teaching it to their students.
+::: {style="font-size:25px;"}
 
 ```{r}
 item_stats <- teach_eff %>%
@@ -766,6 +779,10 @@ ggplot(item_stats, aes(y = label, x = mean, color = Domain)) +
 
 ```
 
+All teachers read definitions of the 20 random SEB skills, and reported about their perceived confidence in teaching it to their students.
+
+:::
+
 <!-- --------------------------------------------------------------------- -->
 
 # Back to the seed questions
@@ -788,7 +805,7 @@ plot(qrcode::qr_code(ylcQR))
 ```
 
 ```         
-Data, code, and materials needed to reproduce these slides are available at: https://github.com/feracotommaso/Slides/tree/main/YLC
+Data, code, and materials needed to reproduce these slides are available at: https://github.com/feracotommaso/Slides/
 ```
 
 </div>
@@ -802,13 +819,13 @@ Data, code, and materials needed to reproduce these slides are available at: htt
 
 <!-- --------------------------------------------------------------------- -->
 
-# Key effects of SEB skills
+<!-- # Key effects of SEB skills -->
 
 <!-- --------------------------------------------------------------------- -->
 
-## Living systematic review and meta-analysis
+<!-- ## Living systematic review and meta-analysis -->
 
-Unfortunately, at the skill-level (e.g., leadership, there are almost no data)
+<!-- Unfortunately, at the skill-level (e.g., leadership, there are almost no data) -->
 
 <!-- --------------------------------------------------------------------- -->
 <!-- --------------------------------------------------------------------- -->
