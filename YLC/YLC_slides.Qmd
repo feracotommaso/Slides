@@ -66,11 +66,6 @@ library(performance)
 
 ```
 
-## In case you want these slides
-
-![](figures/opendata.png){fig-align="center" width="65%"}
-
-
 ## Who am I?
 
 ::: columns
@@ -99,16 +94,15 @@ library(performance)
 
 <!-- --------------------------------------------------------------------- -->
 
-## Seed Questions
+<!-- ## Seed Questions -->
 
-1. From your expert perspective, what are the most critical elements that must be included in an
-interdisciplinary framework of youth leadership?
-2. Are there existing frameworks or theories from your field that could contribute to a more integrated
-understanding of youth leadership?
-3. From your expert perspective, what are the key questions that a science of youth leadership needs to
-address?
-4. How would you position yourself and your research within the framework below, and which specific
-components would you like to focus on/discuss during the workshop?
+<!-- 1.  From your expert perspective, what are the most critical elements that must be included in an interdisciplinary framework of youth leadership? -->
+
+<!-- 2.  Are there existing frameworks or theories from your field that could contribute to a more integrated understanding of youth leadership? -->
+
+<!-- 3.  From your expert perspective, what are the key questions that a science of youth leadership needs to address? -->
+
+<!-- 4.  How would you position yourself and your research within the framework below, and which specific components would you like to focus on/discuss during the workshop? -->
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -116,10 +110,12 @@ components would you like to focus on/discuss during the workshop?
 
 -   Definition
 
--   Key effects in adolescence \[leadership focus\]
+-   Normative change
 
 -   Change goals
 
+    -   Students' perspectives
+    -   Parents' perspectives
     -   Teachers' perspectives
 
 <!-- --------------------------------------------------------------------- -->
@@ -146,36 +142,18 @@ components would you like to focus on/discuss during the workshop?
 
 <!-- --------------------------------------------------------------------- -->
 
-# Key effects in adolescence
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-<!-- --------------------------------------------------------------------- -->
-
-# Skill change
+# Normative skill change
 
 ```{r}
 agediff <- readxl::read_excel("data/agediff.xlsx")
 ```
 
-
 <!-- --------------------------------------------------------------------- -->
 
-## Do we observe normative changes in adolescence?
+## Do we observe normative changes in adolescence? @feraco2023
 
 ::: columns
 ::: {.column width="70%"}
-
 -   N = `r nrow(agediff)/5` (F = `r sum(agediff$Gender=="F")/5`)
     -   IT = `r sum(agediff$Country=="Italian")/5`
     -   US = `r sum(agediff$Country=="American")/5`
@@ -183,18 +161,19 @@ agediff <- readxl::read_excel("data/agediff.xlsx")
 -   Age = `r round(mean(agediff$Age),2)` (*sd* = `r round(sd(agediff$Age),2)`)
     -   Range = `r paste0("[", min(agediff$Age),"; ",max(agediff$Age),"]")`
 -   Measures: BESSI-192
-
 :::
 
 ::: {.column width="30%"}
-
 ```{r, fig.align='right'}
 aGenderUrl <- "https://doi.org/10.3390/jintelligence11060118" 
 plot(qrcode::qr_code(aGenderUrl))
 ```
+:::
+:::
 
-:::
-:::
+```         
+Feraco & Meneghetti (2023) Journal of Intelligence
+```
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -229,7 +208,6 @@ p <- ggplot(agediff, aes(x = Age, y = value, color = Gender)) +
 p
 ```
 
-
 <!-- --------------------------------------------------------------------- -->
 
 ## A focus on self-reported leadership
@@ -263,44 +241,41 @@ ggplot(dsed, aes(x = Age, y = score, color = Gender)) +
 <!-- --------------------------------------------------------------------- -->
 
 # Change goals and beliefs
- 
+
 <!-- --------------------------------------------------------------------- -->
 
 ## Method and people
 
--   A brief definition of the trait/skill: "Whether someone 'tend'/'is capable of behaving' in a social, assertive, and energetic way[, when they want or need to do so]"
+-   A brief definition of the trait/skill: "Whether someone *'tend to behave'/'is capable of behaving'* in a social, assertive, and energetic way*\[, when they want or need to do so\]*"
 
-    -   **Amount**: “How much would you like to increase your level of [skill/trait name]?”
-    -   **Feasibility**: “How much do you think you could increase your level of [skill/trait name] during the next year, if you tried to do so?”
+    -   **Amount**: “How much would you like to increase your level of \[skill/trait name\]?”
+    -   **Feasibility**: “How much do you think you could increase your level of \[skill/trait name\] during the next year, if you tried to do so?”
 
+![Christopher J. Soto](figures/soto.png){fig-align="left" width="10%"} ![Nathan W. Hudson](figures/hudson.png){fig-align="left" width="10.7%"} ![Hayley K. Jach](figures/jach.png){fig-align="left" width="11.5%"} ![Gerardo Pellegrino](figures/gerardo.png){fig-align="left" width="10%"} ![Nicole Casali](figures/nicole.png){fig-align="left" width="10.7%"} 
 
 <!-- --------------------------------------------------------------------- -->
 
-## A first study on college students ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
+## A first study on college students @feraco2025DifferencesChangeGoals ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
 
 ```{r}
 d_college <- readxl::read_excel("data/goals_college.xlsx") # Long-format data for inferential analysis
 ```
 
-
 ::: columns
 ::: {.column width="20%"}
-
 ```{r, fig.align='left'}
 aGenderUrl <- "https://doi.org/10.3390/jintelligence11060118" 
 plot(qrcode::qr_code(aGenderUrl))
 ```
-
-
 :::
 
 ::: {.column width="70%"}
--   N = `r nrow(d_college)/10` (F = `r sum(d_college$gender=="3")/10`, IT = `r sum(d_college$country=="IT")/5`, US = `r sum(d_college$country=="US")/5`) 
+-   N = `r nrow(d_college)/10` (F = `r sum(d_college$gender=="3")/10`, IT = `r sum(d_college$country=="IT")/5`, US = `r sum(d_college$country=="US")/5`)
 -   Age = `r round(mean(d_college$age,na.rm=TRUE),2)` (*sd* = `r round(sd(d_college$age,na.rm=TRUE),2)` `r paste0("[", min(d_college$age, na.rm=TRUE),"; ",max(d_college$age,na.rm=TRUE),"]")`)
+:::
+:::
 
-:::
-:::
-<div style="margin-top: 0px;">
+::: {style="margin-top: 0px;"}
 ```{r}
 dlPlot <- reshape2::melt(d_college, id.vars = c("country", "type", "facet", "macrofacet"),
                          measure.vars = c("amount", "motivation", "feasibility", "implications"),
@@ -338,14 +313,15 @@ dlPlot$Outcome <- factor(dlPlot$Outcome, levels = c("amount", "feasibility", "mo
                                   color = "black"))
 )
 ```
-</div>
+:::
 
-
+```         
+Feraco, Hudson & Soto (2025) Personality and Individual Differences
+```
 
 <!-- --------------------------------------------------------------------- -->
 
-## Moving toward adolescents - Students, teachers, and parents opinions
-<!-- ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"} -->
+## Moving toward adolescents - Students, teachers, and parents opinions ![](figures/opendata.png){width="20px"} ![](figures/opencode.png){width="20px"} ![](figures/openmaterials.png){width="20px"} ![](figures/preregistered.png){width="20px"}
 
 ```{r}
 teachers <- readxl::read_excel("data/goals_teacherData.xlsx")
@@ -381,8 +357,14 @@ kableExtra::kable(tblPart, align = "ccc")%>%
   kable_classic()%>%
   kable_styling(latex_options = "hold_position")
 ```
--   What are the opinions of high school students' about changing their traits or skills?
--   What about their parents' and teachers' opinion about changing their (of the students) traits and skills
+
+-   What are the opinions of high school students about changing their traits or skills?
+
+-   What about their parents' and teachers' opinion about changing their students/children traits and skills?
+
+```         
+Feraco, Jach ... & Soto (in prep)
+```
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -435,7 +417,6 @@ ggplot(longStudentsPlot, aes(x = Score, y = macrofacet, fill = type)) +
                                     color = "black"))
 ```
 
-
 <!-- --------------------------------------------------------------------- -->
 
 ## ...their parents
@@ -486,7 +467,6 @@ ggplot(longParentsPlot, aes(x = Score, y = macrofacet, fill = type)) +
           strip.text = element_text(size = 16, 
                                     color = "black"))
 ```
-
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -542,12 +522,14 @@ ggplot(longTeacherPlot, aes(x = Score, y = macrofacet, fill = type)) +
           strip.text = element_text(size = 16, 
                                     color = "black"))
 ```
+
 <!-- --------------------------------------------------------------------- -->
+
 ## ...what if we ask them whether they want to participate in a workshop?
 
 <!-- --------------------------------------------------------------------- -->
-## ...what if we ask them whether they want to participate in a workshop?
 
+## ...what if we ask them whether they want to participate in a workshop?
 
 ```{r}
 parents <- readxl::read_excel("data/goals_parentsData.xlsx")
@@ -646,12 +628,15 @@ kableExtra::kable(summary_table_vertical, align = "lc")%>%
 
 ```
 
-
-All teachers read definitions of the 20 random SEB skills, and reported about their perceived confidence in teaching it to their students.
+```         
+Pellegrino ... & Feraco (in prep)
+```
 
 <!-- --------------------------------------------------------------------- -->
 
 ## ...results
+
+All teachers read definitions of the 20 random SEB skills, and reported about their perceived confidence in teaching it to their students.
 
 ```{r}
 item_stats <- teach_eff %>%
@@ -783,14 +768,30 @@ ggplot(item_stats, aes(y = label, x = mean, color = Domain)) +
 
 <!-- --------------------------------------------------------------------- -->
 
+# Back to the seed questions
 
-# Ongoing projects
+![](figures/ylcmodel.png){fig-align="left" width="85%"}
 
 <!-- --------------------------------------------------------------------- -->
 
-## Living systematic review and meta-analysis
+# Thank you all!
 
-Unfortunately, at the skill-level (e.g., leadership, there are almost no data)
+<div style="text-align: center; margin-top: 20px;">
+  
+![Chiara Meneghetti](figures/chiara.png){fig-align="left" width="10%"} ![Barbara Carretti](figures/barbara.png){fig-align="left" width="10%"} ![Gerardo Pellegrino](figures/gerardo.png){fig-align="left" width="10%"} ![Christopher J. Soto](figures/soto.png){fig-align="left" width="10%"} ![Nathan W. Hudson](figures/hudson.png){fig-align="left" width="10.7%"} ![Nicole Casali](figures/nicole.png){fig-align="left" width="10.7%"} ![Hayley K. Jach](figures/jach.png){fig-align="left" width="11.5%"}
+
+Free slides here!
+
+```{r, fig.align='center', fig.height=2}
+ylcQR <- "https://feracotommaso.github.io/Slides/YLC/YLC_slides.html" 
+plot(qrcode::qr_code(ylcQR))
+```
+
+```         
+Data, code, and materials needed to reproduce these slides are available at: https://github.com/feracotommaso/Slides/tree/main/YLC
+```
+
+</div>
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -801,10 +802,27 @@ Unfortunately, at the skill-level (e.g., leadership, there are almost no data)
 
 <!-- --------------------------------------------------------------------- -->
 
-# Notes
+# Key effects of SEB skills
 
--   Clusters of characteristics
-    -   Not only dominance but
-    -   Organization, time-management... skills
-    -   Cognitive abilities/intelligence
--   Formative models not reflective
+<!-- --------------------------------------------------------------------- -->
+
+## Living systematic review and meta-analysis
+
+Unfortunately, at the skill-level (e.g., leadership, there are almost no data)
+
+<!-- --------------------------------------------------------------------- -->
+<!-- --------------------------------------------------------------------- -->
+<!-- --------------------------------------------------------------------- -->
+
+
+<!-- # Notes -->
+
+<!-- -   Clusters of characteristics -->
+
+<!--     -   Not only dominance but -->
+
+<!--     -   Organization, time-management... skills -->
+
+<!--     -   Cognitive abilities/intelligence -->
+
+<!-- -   Formative models not reflective -->
