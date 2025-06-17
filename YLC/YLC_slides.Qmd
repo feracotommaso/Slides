@@ -787,7 +787,7 @@ All teachers read definitions of the 20 random SEB skills, and reported about th
 
 # Back to the seed questions
 
-![](figures/ylcmodel.png){fig-align="left" width="85%"}
+![](figures/ylcmodel.jpg){fig-align="left" width="85%"}
 
 <!-- --------------------------------------------------------------------- -->
 

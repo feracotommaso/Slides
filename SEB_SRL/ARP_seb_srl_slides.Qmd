@@ -65,7 +65,7 @@ From a personality perspective, we would say a student who has high openness and
 :::
 
 ::: {.column width="55%"}
-![](figures/sebmodel.png){fig-align="right" width="85%"}
+![](figures/sebmodel.png){fig-align="right" width="75%"}
 :::
 :::
 
@@ -107,11 +107,15 @@ The two fields, however, remain largely separated and rarely integrated, but few
 
 -   Social-Emotional Flourishing Framework Collie [@collie2024AcademicSocialemotionalFlourishing]
 
--   Salmela-aro [@salmela-aro2022StudyDemandsResourcesModel]
-
 <!-- --------------------------------------------------------------------- -->
 
-# Aims, goals, and hypotheses
+# The studies ![](figures/openmaterials.png){width="20px"}![](figures/opendata.png){width="20px"}![](figures/opencode.png){width="20px"}
+
+```{r, fig.height=2, fig.align='left'}
+osfurl <- "https://osf.io/vx9dm/?view_only=b4206ceb1e014dcfbc7316a23165ba43"
+osfqrcd <- qrcode::qr_code(osfurl)
+plot(osfqrcd)
+```
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -145,7 +149,7 @@ The two fields, however, remain largely separated and rarely integrated, but few
     -   Achievement emotions
 -   Life satisfaction scale [@difabio2016MeasuringAdolescentLife]
 -   Peer acceptance [@brock1998PerceivedAcceptanceScale]
--   Academic achievement: average grades in Italian and Math
+-   Academic achievement: average grades
 :::
 
 ::: {.column width="50%"}
@@ -173,6 +177,10 @@ Responses where screened for careless responding using multiple detection method
 <!-- --------------------------------------------------------------------- -->
 
 # Study 1
+
+```         
+Feraco, Bonelli, Da Re, & Meneghetti (in press) Social Psychology of Education
+```
 
 <!-- --------------------------------------------------------------------- -->
 
@@ -254,8 +262,8 @@ res0.1$xmin = hp2a_x1; res0.1$xmax = hp2a_x2; res0.1$hp = rep(c(7,6,5,4,2,3,1),9
     scale_x_continuous(breaks = seq(-.30,.30, by = .15)) +
     coord_cartesian(xlim = c(-.35,.35)) +
     scale_y_discrete(labels = y_labels) +
-    theme_bw(base_size = 18) +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14))
+    theme_bw(base_size = 14) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 11))
 )
 
 ```
@@ -401,6 +409,10 @@ res01.1$xmin = rep(hp2b_x1,2); res01.1$xmax = rep(hp2b_x2,2); res01.1$hp = rep(c
 
 # Study 2
 
+```         
+Pellegrino, Meneghetti, Carretti & Feraco (under review)
+```
+
 <!-- --------------------------------------------------------------------- -->
 
 ## Results - Do SEB skills predict outcomes beyond engagement?
@@ -506,24 +518,27 @@ y_labels2 <- c("Emotional resilience", "Cooperation", "Social engagement",
 This perfectly aligns with SEB definition of functional capacities that people use when they want or need to do so [@soto2021TakingSkillsSeriously]: students will gain from these skills if they want to use them for studying.
 :::
 
-<!-- --------------------------------------------------------------------- -->
+## Thank you all
 
-```{r, eval=FALSE}
+<div style="text-align: center; margin-top: 20px;">
+  
+![Chiara Meneghetti](figures/chiara.png){fig-align="left" width="10%"} ![Barbara Carretti](figures/barbara.png){fig-align="left" width="10%"} ![Gerardo Pellegrino](figures/gerardo.png){fig-align="left" width="10%"} 
+
+Free slides here!
+
+```{r, fig.align='center', fig.height=2}
 url <- "https://feracotommaso.github.io/Slides/SEB_SRL/ARP_seb_srl_slides.html"
 qrcd <- qrcode::qr_code(url)
 plot(qrcd)
 ```
 
+```         
+Data, code, and materials needed to reproduce these slides are available at: https://github.com/feracotommaso/Slides/
+```
+
+</div>
 
 <!-- --------------------------------------------------------------------- -->
-
-# 
-
-::: {style="text-align: center; font-size: 30px;"}
-The slides are freely available here:
-:::
-
-![](assets/qr.png){width="50%" fig-align="center"}
 
 ::: {style="text-align: center; font-size: 30px;"}
 tommaso.feraco\@unipd.it
