@@ -46,8 +46,6 @@ library(ggplot2)
 
 # Who is a successful student?
 
-From a personality perspective, we would say a student who has high openness and conscientiousness [@poropat2009MetaanalysisFivefactorModel; @chen2025BigFivePersonality].
-
 <!-- --------------------------------------------------------------------- -->
 
 ## From a skill perspective
@@ -170,7 +168,7 @@ plot(osfqrcd)
 :::
 
 ```         
-Responses where screened for careless responding using multiple detection methods.
+Responses were screened for careless responding using multiple detection methods.
 ```
 :::
 
@@ -179,7 +177,7 @@ Responses where screened for careless responding using multiple detection method
 # Study 1
 
 ```         
-Feraco, Bonelli, Da Re, & Meneghetti (in press) Social Psychology of Education
+Feraco, Bonelli, Da Re, & Meneghetti (2025) Social Psychology of Education
 ```
 
 <!-- --------------------------------------------------------------------- -->
@@ -348,7 +346,7 @@ res1.1$xmin = hp2b_x1; res1.1$xmax = hp2b_x2; res1.1$hp = rep(c(13:6,5,4,2,3,1),
     theme_bw(base_size = 18) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14),
           legend.position = "none") +
-    geom_point(data = res02.1, aes(x = est.std, y = rhs, color = selfeff))
+    geom_point(data = res02.1, aes(x = est.std, y = rhs, color = selfeff), size = 2)
 )
 
 
@@ -480,7 +478,7 @@ y_labels2 <- c("Emotional resilience", "Cooperation", "Social engagement",
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14),
           legend.position = "none") +
-    geom_point(data = res2.1, aes(x = est.std, y = rhs, color = engagement))
+    geom_point(data = res2.1, aes(x = est.std, y = rhs, color = engagement), size = 2)
 )
 
 ```
