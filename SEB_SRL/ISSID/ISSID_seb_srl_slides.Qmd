@@ -1,0 +1,567 @@
+---
+title: "Integrating social, emotional, and behavioral skills with learning frameworks"
+subtitle: "Two cross-sectional studies in high schools"
+authors:
+  - name: Tommaso Feraco
+    affiliations:
+      - University of Padova
+  - name: Gerardo Pellegrino
+    affiliations:
+      - University of Padova
+  - name: Barbara Carretti
+    affiliations:
+      - University of Padova
+  - name: Chiara Meneghetti
+    affiliations:
+      - University of Padova
+
+include-in-header: assets/slidesheader.html
+format:
+  revealjs:
+    css: custom.css
+    theme: default
+    slide-number: c/t
+    self-contained: false
+    title-slide-attributes: 
+     data-background-image: "figures/issidLogo.png"
+     data-background-size: 15%
+     data-background-position: 50% 92%
+execute:
+  echo: false
+  output: true
+  cache: true
+  message: false
+  warning: false
+bibliography: references.bib
+csl: nature.csl
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(lavaan)
+library(ggplot2)
+```
+
+# Social, emotional, and behavioral skills
+
+<!-- --------------------------------------------------------------------- -->
+
+## Definition
+
+::: {style="font-size:25px;"}
+**Social, emotional, and behavioral skills** represent the abilities to establish and maintain social relationships, regulate emotions, and effectively manage behaviors toward goals and learning and mainly fall into five areas [@soto2021TakingSkillsSeriously]:
+
+::: columns
+::: {.column width="45%"}
+-   **Self-management skills**
+-   **Social engagement skills**
+-   **Cooperation skills**
+-   **Innovation skills**
+-   **Emotional resilience skills**
+:::
+
+::: {.column width="55%"}
+![](figures/sebmodel.png){fig-align="right" width="75%"}
+:::
+:::
+:::
+
+## SEB skills at school
+
+::: {style="font-size:25px;"}
+|                 | Self-management | Innovation | Social engagement | Cooperation | Emotional resilience |
+|------------|:----------:|:----------:|:----------:|:----------:|:----------:|
+| Achievement     |      **+**      |   **+**    |                   |             |                      |
+| Engagement      |      **+**      |   **+**    |       **+**       |             |                      |
+| Social outcomes |                 |            |       **+**       |    **+**    |                      |
+| Well-being      |      **+**      |            |                   |             |        **+**         |
+
+These are linked to students' academic achievement, school engagement, social relationships, and well-being [@soto2024GoingTraitsSocial; @ringwald2025MoreSkillTrait; @feraco2025SocialEmotionalBehavioral; @napolitano2025ChangesSocialEmotional].
+:::
+
+# Who is a successful student?
+
+From a personality perspective, we would say a student who has high openness and conscientiousness [@poropat2009MetaanalysisFivefactorModel; @chen2025BigFivePersonality].
+
+From a skill perspective, we may say something very similar: high self-management and innovation
+
+<!-- --------------------------------------------------------------------- -->
+
+## From an educational perspective
+
+**Learning is a complex activity** and **educational literature is maybe even more complex and vast**. From this perspective, students need:
+
+::: columns
+::: {.column width="50%"}
+-   **Cognitive abilities**
+-   **Motivation**
+-   **Beliefs**
+-   **Study strategies**
+-   **Emotions**
+-   **Engagement**
+:::
+
+::: {.column width="50%"}
+![](figures/srlmodel.png){fig-align="center"}
+:::
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+## Merging the different perspectives
+
+The two fields, however, remain largely separated and rarely integrated, but few proposals have been advanced:
+
+-   The Integrative Development-in-Sociocultural-Context Model [@wang2019IntegrativeDevelopmentinsocioculturalcontextModel]
+
+-   The integrated self-regulated learning model [@ben-eliyahu2019AcademicEmotionalLearning]
+
+-   Social-emotional Competence School Model [@collie2020DevelopmentSocialEmotional]
+
+-   Social-Emotional Flourishing Framework Collie [@collie2024AcademicSocialemotionalFlourishing]
+
+<!-- --------------------------------------------------------------------- -->
+
+# The studies ![](figures/openmaterials.png){width="20px"}![](figures/opendata.png){width="20px"}![](figures/opencode.png){width="20px"}
+
+```{r, fig.height=2, fig.align='left'}
+osfurl <- "https://osf.io/vx9dm/?view_only=b4206ceb1e014dcfbc7316a23165ba43"
+osfqrcd <- qrcode::qr_code(osfurl)
+plot(osfqrcd)
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+## Main questions
+
+-   Do SEB skills correlate with academic (and non-academic) outcomes in high school students, including SRL factors?
+    -   Study 1: emotional, motivational, and strategic factors
+    -   Study 2: school engagement
+-   Do SEB skills predict academic (and non-academic) outcomes beyond SRL factors?
+-   What are the main mechanisms linking SEB, SRL, and achievement?
+
+<!-- --------------------------------------------------------------------- -->
+
+## Participants & materials ![](figures/openmaterials.png){width="35px"}![](figures/opendata.png){width="35px"}![](figures/opencode.png){width="35px"}
+
+::: {style="font-size:22px;"}
+::: columns
+::: {.column width="50%"}
+**STUDY 1** **Participants**
+
+-   5075 students (18.23 yo \[sd = .0.95\])
+
+**Materials**
+
+-   SEB skills: BESSI-45 [@feraco2024ItalianBehavioralEmotional]
+-   SRL factors: [@debeni2014TestAMOSAbilita]
+    -   SRL strategies
+    -   Academic self-efficacy
+    -   Learning goals
+    -   Growth mindset
+    -   Achievement emotions
+-   Life satisfaction scale [@difabio2016MeasuringAdolescentLife]
+-   Peer acceptance [@brock1998PerceivedAcceptanceScale]
+-   Academic achievement: average grades
+:::
+
+::: {.column width="50%"}
+**STUDY 2** **Participants**
+
+-   1642 students (15.5 yo \[sd = 1.47\])
+
+**Materials**
+
+-   SEB skills: BESSI-45 [@feraco2024ItalianBehavioralEmotional]
+-   School engagement [@mameli2017MeasuringFourdimensionalEngagement]
+-   School satisfaction [@zappulla2014FactorStructureConvergent]
+-   Life satisfaction scale [@difabio2016MeasuringAdolescentLife]
+-   Burnout [@salmela-aro2009PersonalGoalsWellbeing]
+-   Fluid intelligence [@cattell1940CulturefreeIntelligenceTest]
+-   Academic achievement: average grades
+:::
+:::
+
+```         
+Responses where screened for careless responding using multiple detection methods.
+```
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+# Study 1 @feraco2025SoftSkillsHigh
+
+```         
+Feraco, Bonelli, Da Re, & Meneghetti (2025) Social Psychology of Education
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+## Results - Do SEB skills correlate with outcomes?
+
+```{r}
+#| label: loadDataS1
+load("data/factorScores.Rdata")
+dd[,4:17] <- apply(dd[,4:17],2,scale) # Standardize all the questionnaires 
+```
+
+```{r}
+# #| label: fig-res1
+
+m0 <- "
+acceptance+swls+media+qas+mindset+goals+selfEff+emoNeg+emoPos ~ age+sex + SMD+IND+COD+SED+ESD
+"
+# Manually specify hypothesized effects for figures
+#                     SM   IN   CO   SE   ER  
+hp2a_x1 <- c(00, 00,-.10,-.10, .10, .20,-.10, # ACC 
+             00, 00, .10,-.10,-.10, .10, .20, # LS
+             00, 00, .10,-.10,-.10,-.10,-.10, # AC
+             00, 00, .20, .10,-.10,-.10,-.10, # SR
+             00, 00, .10, .10,-.10,-.10,-.10, # MI
+             00, 00, .10, .10,-.10,-.10,-.10, # LG
+             00, 00, .10, .10, .10, .10, .10, # SLF
+             00, 00,-.10,-.10,-.10,-.10,-.30, #NEG
+             00, 00,-.10,-.10,-.10,-.10, .10) # POS
+hp2a_x2 <- c(00, 00, .10, .10, .30, .40, .10, 
+             00, 00, .30, .10, .10, .30, .40, 
+             00, 00, .30, .10, .10, .10, .10, 
+             00, 00, .40, .30, .10, .10, .10, 
+             00, 00, .30, .30, .10, .10, .10, 
+             00, 00, .30, .30, .10, .10, .10, 
+             00, 00, .30, .30, .30, .30, .30, 
+             00, 00, .10, .10, .10, .10,-.10, 
+             00, 00, .10, .10, .10, .10, .30)
+
+fit0 <- sem(m0, dd,missing="fiml") # Fit the model
+# summary(fit0,std=T) # Show the results
+res0 <- standardizedSolution(fit0) # Store standardized results
+res0.1 <- res0[res0$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")] # Extract useful results
+
+TableS1 <- data.frame(Predictor = res0.1$rhs, # Make Table S1
+                      x = rep("→", nrow(res0.1)),
+                      Outcome = res0.1$lhs,
+                      Effect = paste0(round(res0.1$est.std,3), " [", round(res0.1$ci.lower,3), "; ", round(res0.1$ci.upper,3),"]"),
+                      se = round(res0.1$se,3), z = round(res0.1$z,3))
+
+R2m0 <- data.frame(variable = res0[64:72, "lhs"],
+                   R2 = round(1-(res0[64:72, "est.std"]),2))
+
+# --- Plotting
+custom_orderY <- c("ESD", "COD", "SED", "IND", "SMD", "sex", "age") 
+res0.1$rhs <- factor(res0.1$rhs, levels = custom_orderY)
+custom_orderX <- c("qas","mindset","goals","selfEff","emoPos","emoNeg",
+                   "media","swls","acceptance") 
+res0.1$lhs <- factor(res0.1$lhs, levels = custom_orderX)
+srl_labels <- c("qas" = "SRL strategies","mindset"="Mindset","goals"="Learning goals",
+                "selfEff"="Self-efficacy","emoPos"="Positive emotions","emoNeg"="Negative emotions",
+                "media"="Academic achievement","swls"="Satisfaction with life",
+                "acceptance"="Peer acceptance")
+y_labels <- c("Emotional resilience", "Cooperation", "Social engagement", 
+              "Innovation", "Self-management", "Females", "Age")
+
+res0.1$xmin = hp2a_x1; res0.1$xmax = hp2a_x2; res0.1$hp = rep(c(7,6,5,4,2,3,1),9)
+
+(Figure2 <- 
+    ggplot(res0.1, aes(x = est.std, y = rhs)) +
+    geom_point(size = 3) +
+    geom_errorbar(aes(xmin = ci.lower, xmax = ci.upper), width = 0.4, linewidth = .8) +
+    geom_vline(xintercept = c(-.10, .10), linetype = "dashed") +
+    # Adding highlighted rectangles based on hypothesized ranges
+    geom_rect(aes(xmin = xmin, xmax = xmax, ymin = hp - 0.4, ymax = hp + 0.4), 
+              fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+    # Rest of the plot
+    labs(x = "Standardized Estimates", y = "") +
+    facet_wrap(~lhs, labeller = labeller(lhs = srl_labels)) +
+    scale_x_continuous(breaks = seq(-.30,.30, by = .15)) +
+    coord_cartesian(xlim = c(-.35,.35)) +
+    scale_y_discrete(labels = y_labels) +
+    theme_bw(base_size = 14) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 11))
+)
+
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+## Results - Do SEB skills predict outcomes beyond SRL?
+
+```{r}
+# Multivariate model with the addition of SRL factors as predictors
+m1 <- "
+acceptance+swls+media ~ age+sex + qas+mindset+goals+selfEff+emoNeg+emoPos + SMD+IND+COD+SED+ESD
+"
+# Specify hypothesize for plot
+#                        SM   IN   CO   SE   ER  
+hp2b_x1 <- c(rep(0, 8),-.10,-.10, .10, .20,-.10, # ACC 
+             rep(0, 8), .10,-.10,-.10, .10, .20, # LS
+             rep(0, 8), .10,-.10,-.10,-.10,-.10) # AC)
+hp2b_x2 <- c(rep(0, 8), .10, .10, .30, .40, .10, 
+             rep(0, 8), .30, .10, .10, .30, .40, 
+             rep(0, 8), .30, .10, .10, .10, .10)
+
+fit1 <- sem(m1, dd,missing="fiml")
+res1 <- standardizedSolution(fit1)
+res1.1 <- res1[res1$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+
+TableS2 <- data.frame(Predictor = res1.1$rhs,
+                      x = rep("→", nrow(res1.1)),
+                      Outcome = res1.1$lhs,
+                      Effect = paste0(round(res1.1$est.std,3), " [", round(res1.1$ci.lower,3), "; ", round(res1.1$ci.upper,3),"]"),
+                      se = round(res1.1$se,3), z = round(res1.1$z,3))
+
+# R squared
+R2m1 <- data.frame(variable = res1[40:42, "lhs"],
+                   R2 = round(1-(res1[40:42, "est.std"]),2))
+
+
+m01 <- "
+acceptance+swls+media ~ age+sex + qas+mindset+goals+selfEff+emoNeg+emoPos + SMD+IND+COD+SED+ESD
+"
+m02 <- "
+acceptance+swls+media ~ age+sex + qas+mindset+goals+0*selfEff+emoNeg+emoPos + SMD+IND+COD+SED+ESD
+"
+fit01 <- sem(m01, dd,missing="fiml")
+fit02 <- sem(m02, dd,missing="fiml")
+res01 <- standardizedSolution(fit01)
+res02 <- standardizedSolution(fit02)
+res01.1 <- res01[res01$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res02.1 <- res02[res02$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res01.1$selfeff <- "with"
+res02.1$selfeff <- "without"
+
+res01.1 <- rbind.data.frame(res01.1,res02.1)
+
+# --- Plotting
+custom_orderY1 <- c("ESD", "COD", "SED", "IND", "SMD",
+                    "qas","mindset","goals","selfEff","emoPos","emoNeg",
+                    "sex", "age")
+res1.1$rhs <- factor(res1.1$rhs, levels = custom_orderY1)
+custom_orderX1 <- c("media","swls","acceptance")
+res1.1$lhs <- factor(res1.1$lhs, levels = custom_orderX1)
+out_labels <- c("media"="Academic achievement","swls"="Satisfaction with life",
+                "acceptance"="Peer acceptance")
+y_labels2 <- c("Emotional resilience", "Cooperation", "Social engagement", 
+               "Innovation", "Self-management", "SRL strategies", "Mindset",
+               "Learning goals", "Self-efficacy", "Positive emotions",
+               "Negative emotions", "Females", "Age")
+res1.1$xmin = hp2b_x1; res1.1$xmax = hp2b_x2; res1.1$hp = rep(c(13:6,5,4,2,3,1),3)
+
+(Figure3 <- ggplot(res1.1, aes(x = est.std, y = rhs)) +
+    geom_point(size=4) +
+    geom_errorbar(aes(xmin = ci.lower, xmax = ci.upper), width = 0.4, linewidth = .8) +
+    geom_vline(xintercept = c(-.10, .10), linetype = "dashed") +
+    # Adding highlighted rectangles based on hypothesized ranges
+    geom_rect(aes(xmin = xmin, xmax = xmax, ymin = hp - 0.4, ymax = hp + 0.4), 
+              fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+    # Continue  
+    labs(x = "Standardized Estimates", y = "") +
+    facet_wrap(~lhs, labeller = labeller(lhs = out_labels)) +
+    scale_x_continuous(breaks = seq(-.20,.40, by = .10)) +
+    scale_y_discrete(labels = y_labels2) +
+    theme_bw(base_size = 18) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14),
+          legend.position = "none") +
+    geom_point(data = res02.1, aes(x = est.std, y = rhs, color = selfeff))
+)
+
+
+```
+
+```{r, eval=FALSE}
+# Multivariate model with the addition of SRL factors as predictors
+m01 <- "
+acceptance+swls+media ~ age+sex + qas+mindset+goals+selfEff+emoNeg+emoPos + SMD+IND+COD+SED+ESD
+"
+m02 <- "
+acceptance+swls+media ~ age+sex + qas+mindset+goals+0*selfEff+emoNeg+emoPos + SMD+IND+COD+SED+ESD
+"
+fit01 <- sem(m01, dd,missing="fiml")
+fit02 <- sem(m02, dd,missing="fiml")
+res01 <- standardizedSolution(fit01)
+res02 <- standardizedSolution(fit02)
+res01.1 <- res01[res01$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res02.1 <- res02[res02$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res01.1$selfeff <- "with"
+res02.1$selfeff <- "without"
+
+res01.1 <- rbind.data.frame(res01.1,res02.1)
+
+# --- Plotting
+custom_orderY1 <- c("ESD", "COD", "SED", "IND", "SMD",
+                    "qas","mindset","goals","selfEff","emoPos","emoNeg",
+                    "sex", "age")
+res01.1$rhs <- factor(res01.1$rhs, levels = custom_orderY1)
+custom_orderX1 <- c("media","swls","acceptance")
+res01.1$lhs <- factor(res01.1$lhs, levels = custom_orderX1)
+out_labels <- c("media"="Academic achievement","swls"="Satisfaction with life",
+                "acceptance"="Peer acceptance")
+y_labels2 <- c("Emotional resilience", "Cooperation", "Social engagement", 
+               "Innovation", "Self-management", "SRL strategies", "Mindset",
+               "Learning goals", "Self-efficacy", "Positive emotions",
+               "Negative emotions", "Females", "Age")
+res01.1$xmin = rep(hp2b_x1,2); res01.1$xmax = rep(hp2b_x2,2); res01.1$hp = rep(c(13:6,5,4,2,3,1),6)
+
+(Figure3 <- ggplot(res01.1, aes(x = est.std, y = rhs, color = selfeff, shape = selfeff)) +
+    geom_point(size=4, alpha = .8) +
+    geom_errorbar(aes(xmin = ci.lower, xmax = ci.upper), 
+                  width = 0, linewidth = .8, alpha = .8) +
+    geom_vline(xintercept = c(-.10, .10), linetype = "dashed") +
+    # Continue  
+    labs(x = "Standardized Estimates", y = "") +
+    facet_wrap(~lhs, labeller = labeller(lhs = out_labels)) +
+    scale_x_continuous(breaks = seq(-.20,.40, by = .10)) +
+    scale_color_manual(values = c("black", "grey89")) +
+    scale_y_discrete(labels = y_labels2) +
+    theme_bw(base_size = 18) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14),
+          legend.position = "none")
+)
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+# Study 2
+
+```         
+Pellegrino, Meneghetti, Carretti & Feraco (under review)
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+## Results - Do SEB skills predict outcomes beyond engagement?
+
+```{r}
+d2 <- readxl::read_excel("data/study2data.xlsx")
+```
+
+```{r}
+mod <- "
+School_Sat+Life_Sat+Burnout+achievement ~ age+Gender+TOT_ENG+SMD+IND+SED+COD+ERD+Cattell_TOT
+" 
+
+mod2 <- "
+School_Sat+Life_Sat+Burnout+achievement ~ age+Gender+0*TOT_ENG+SMD+IND+SED+COD+ERD+Cattell_TOT
+" 
+
+# Fit the SEM model to the data using maximum likelihood estimation
+fit <- sem(mod, data = d2, estimator = "ML")
+fit2 <- sem(mod2, data = d2, estimator = "ML")
+
+res1 <- standardizedSolution(fit)
+res1.1 <- res1[res1$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res1.1$engagement = "with"
+res2 <- standardizedSolution(fit2)
+res2.1 <- res2[res2$op == "~", c("lhs","rhs","est.std","ci.lower","ci.upper","se","z")]
+res2.1$engagement = "without"
+
+TableS2 <- data.frame(Predictor = res1.1$rhs,
+                      x = rep("→", nrow(res1.1)),
+                      Outcome = res1.1$lhs,
+                      Effect = paste0(round(res1.1$est.std,3), " [", round(res1.1$ci.lower,3), "; ", round(res1.1$ci.upper,3),"]"),
+                      se = round(res1.1$se,3), z = round(res1.1$z,3))
+
+# res1.1 <- rbind.data.frame(res1.1, res2.1)
+# --- Plotting
+custom_orderY1 <- c("ERD", "COD", "SED", "IND", "SMD",
+                    "TOT_ENG","Cattell_TOT","Gender", "age")
+res1.1$rhs <- factor(res1.1$rhs, levels = custom_orderY1)
+custom_orderX1 <- c("achievement","Life_Sat","School_Sat","Burnout")
+res1.1$lhs <- factor(res1.1$lhs, levels = custom_orderX1)
+out_labels <- c("achievement"="Academic achievement",
+                "Life_Sat"="Satisfaction with life",
+                "School_Sat"="School satisfaction",
+                "Burnout"="Burnout")
+y_labels2 <- c("Emotional resilience", "Cooperation", "Social engagement", 
+               "Innovation", "Self-management", "School engagement", "Fluid intelligence",
+               "Females", "Age")
+#res1.1$xmin = hp2b_x1; res1.1$xmax = hp2b_x2; res1.1$hp = rep(c(13:6,5,4,2,3,1),3)
+
+(Figure3 <- ggplot(res1.1, aes(x = est.std, y = rhs)) +
+    geom_point(size=4) +
+    geom_errorbar(aes(xmin = ci.lower, xmax = ci.upper), 
+                  width = 0, linewidth = .8) +
+    geom_vline(xintercept = c(-.10, .10), linetype = "dashed") +
+    # Adding highlighted rectangles based on hypothesized ranges
+    # geom_rect(aes(xmin = xmin, xmax = xmax, ymin = hp - 0.4, ymax = hp + 0.4), 
+    #           fill = "grey", alpha = 0.5, inherit.aes = FALSE) +
+    # Continue  
+    labs(x = "Standardized Estimates", y = "") +
+    facet_wrap(~lhs, labeller = labeller(lhs = out_labels), ncol = 4, scales = "free_x") +
+    scale_x_continuous(breaks = seq(-.40,.80, by = .10)) +
+    #scale_color_manual(values = c("black", "grey89")) +
+    scale_y_discrete(labels = y_labels2) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1.2, hjust=1, size = 14),
+          legend.position = "none") +
+    geom_point(data = res2.1, aes(x = est.std, y = rhs, color = engagement))
+)
+
+```
+
+<!-- --------------------------------------------------------------------- -->
+
+# Conclusions and Discussion
+
+<!-- --------------------------------------------------------------------- -->
+
+## SEB at school
+
+::: {style="font-size:25px;"}
+-   Social, emotional, and behavioral skills resulted important for
+    -   SRL factors (self-management + innovation + emotional resilience)
+    -   Academic achievement (self-management + innovation)
+    -   Non academic outcomes (cooperation + social engagement + emotional resilience)
+
+**BUT**
+
+-   When considering SRL factors:
+    -   Associations with academic achievement almost disappear
+    -   They keep their role for non-academic outcomes
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+## Integrating SEB and SRL frameworks
+
+::: {style="font-size:25px;"}
+-   Our results (may) support the multiple frameworks proposed:
+    -   SEB skills as broader capabilities that may lead to the adoption of positive SRL behaviors and beliefs \[*students who perceive themselves as having strong SEB skills are more likely to engage in behaviors that support both academic success and social-emotional development[@collie2024AcademicSocialemotionalFlourishing]*\]
+    -   SEB may lead to higher achievement through mediated processes
+
+This perfectly aligns with SEB definition of functional capacities that people use when they want or need to do so [@soto2021TakingSkillsSeriously]: students will gain from these skills if they want to use them for studying.
+:::
+
+## Thank you all
+
+::: {style="text-align: center; margin-top: 20px;"}
+![Chiara Meneghetti](figures/chiara.png){fig-align="left" width="10%"} ![Barbara Carretti](figures/barbara.png){fig-align="left" width="10%"} ![Gerardo Pellegrino](figures/gerardo.png){fig-align="left" width="10%"}
+
+Free slides here!
+
+```{r, fig.align='center', fig.height=2}
+url <- "https://feracotommaso.github.io/Slides/SEB_SRL/ARP_seb_srl_slides.html"
+qrcd <- qrcode::qr_code(url)
+plot(qrcd)
+```
+
+```         
+Data, code, and materials needed to reproduce these slides are available at: https://github.com/feracotommaso/Slides/
+```
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+::: {style="text-align: center; font-size: 30px;"}
+tommaso.feraco\@unipd.it
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+# References
+
+::: {#refs}
+:::
+
+<!-- --------------------------------------------------------------------- -->

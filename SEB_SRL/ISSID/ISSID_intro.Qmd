@@ -1,0 +1,136 @@
+---
+title: "Social, Emotional, and Behavioral Skills"
+subtitle: "Evidence from Trait-Focused and Capacity-Focused Conceptualizations"
+authors:
+  - name: Tommaso Feraco
+  - name: Beatrice Rammsteidt
+  - name: Ricardo Primi
+  - name: Christopher J. Soto
+  - name: Brent Roberts
+
+include-in-header: assets/slidesheader.html
+format:
+  revealjs:
+    css: custom.css
+    theme: default
+    slide-number: c/t
+    self-contained: false
+    title-slide-attributes: 
+     data-background-image: "figures/issidLogo.png"
+     data-background-size: 15%
+     data-background-position: 50% 85%
+execute:
+  echo: false
+  output: true
+  cache: true
+  message: false
+  warning: false
+#bibliography: references.bib
+#csl: nature.csl
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(lavaan)
+library(ggplot2)
+library(dplyr)
+
+```
+
+# Social, Emotional, and Behavioral skills
+
+<!-- --------------------------------------------------------------------- -->
+
+## From Soto et al., 2021
+
+::: {style="font-size:25px;"}
+**Social, emotional, and behavioral skills** represent the abilities to establish and maintain social relationships, regulate emotions, and effectively manage behaviors toward goals and learning and mainly fall into five areas:
+
+::: columns
+::: {.column width="45%"}
+-   **Self-management skills**
+-   **Social engagement skills**
+-   **Cooperation skills**
+-   **Innovation skills**
+-   **Emotional resilience skills**
+:::
+
+::: {.column width="55%"}
+![](figures/sebmodel.png){fig-align="right" width="75%"}
+:::
+:::
+:::
+
+## An evolving literature
+
+::: {style="font-size:25px;"}
+::: columns
+::: {.column width="65%"}
+```{r}
+d <- read.csv("data/sebPubs.csv")
+
+# Assuming your dataframe is named d and it has a column named 'Year'
+# Step 1: Count number of publications per year
+pubs_per_year <- d %>%
+  group_by(Year) %>%
+  summarise(count = n()) %>%
+  arrange(Year) %>%
+  mutate(cumulative = cumsum(count))
+
+additionalYears <- data.frame(
+  Year = c(2018,2019,2020),
+  count = c(0,0,0),
+  cumulative = c(0,0,0)
+)
+
+predicted <- data.frame(
+  Year = c(2025),
+  count = c(0),
+  cumulative = c(190)
+)
+
+branch <- data.frame(
+  Year = c(2024, 2025),
+  cumulative = c(103, 190)
+)
+
+pubs_per_year <- rbind.data.frame(additionalYears,pubs_per_year)
+
+ggplot() +
+  geom_line(data = pubs_per_year, aes(x = Year, y = cumulative), color = "black") +
+  geom_point(data = pubs_per_year, aes(x = Year, y = cumulative), color = "black",size = 3) +
+  geom_point(data = predicted, aes(x = Year, y = cumulative), color = "grey30",size = 3) +
+  geom_line(data = branch, aes(x = Year, y = cumulative), linetype = "dashed", color = "grey30") +
+  labs(
+    title = "SEB publications since first seminal paper",
+    x = "Year",
+    y = "Cumulative Publications"
+  ) +
+  scale_x_continuous(breaks = seq(2018, 2025, by = 1)) +
+  theme_minimal()
+```
+:::
+
+::: {.column width="35%"}
+**Main topics** (imho)
+
+-   Development
+-   Achievement
+-   Predictive validity
+-   Measurement
+-   Comparison with traits...
+-   ... & other frameworks
+:::
+:::
+:::
+
+<!-- --------------------------------------------------------------------- -->
+
+## Today's presentations
+
+-   Tommaso Feraco: Integrating social, emotional, and behavioral skills with learning frameworks. [Two cross-sectional studies](https://feracotommaso.github.io/Slides/SEB_SRL/ARP_seb_srl_slides.html#/title-slide) in high schools
+-   **Beatrice Rammstedt:** Cross-cultural variations in the association of the Big Five and cognitive skills
+-   **Ricardo Primi**: Bridging Cognition and Personality: AI-Assessed Creative Potential and Its Social-Emotional Correlates
+-   **Christopher J. Soto**: Practice Makes Perfect: A Behavioral Challenge Intervention to Develop Social, Emotional, and Behavioral Skills
