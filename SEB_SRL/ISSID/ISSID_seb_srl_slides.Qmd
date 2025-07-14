@@ -541,7 +541,7 @@ This perfectly aligns with SEB definition of functional capacities that people u
 Free slides here!
 
 ```{r, fig.align='center', fig.height=2}
-url <- "https://feracotommaso.github.io/Slides/SEB_SRL/ARP_seb_srl_slides.html"
+url <- "https://feracotommaso.github.io/Slides/SEB_SRL/ISSID/ISSID_seb_srl_slides.html"
 qrcd <- qrcode::qr_code(url)
 plot(qrcd)
 ```
