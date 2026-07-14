@@ -23,6 +23,17 @@ Here I publicly store presentations by topic:
 -   **SEB skills in adolescence and change goals** - [YLC presentation](https://feracotommaso.github.io/Slides/YLC/YLC_slides.html) ([pdf](https://feracotommaso.github.io/Slides/YLC/YLC_slides.pdf))
 -   **The Living SEB project** - [IBT](https://feracotommaso.github.io/living_SEB_review/slides/IBTcolloquium/IBTcolloquium.html#/title-slide); [Lab meeting](https://feracotommaso.github.io/living_SEB_review/slides/labMeeting/LabMeetingLMA.html)
 
+## Methods
+
+-   **Clusters that are not there -** [Psicostat meeting](https://psicostat.dpss.psy.unipd.it/meetings/slides/2024-03-08_feraco.pdf)
+-   **SEMbeddings** - [handZone](https://feracotommaso.github.io/living_SEB_review/slides/SEMbeddingSlides.pdf)
+-   **Latent interaction** - [handZone](https://feracotommaso.github.io/SEM-phd-course/extras/ex03_latent-interactions_modsem.html#/title-slide)
+-   **EFA-PCA-CFA** - [handZone](https://feracotommaso.github.io/SEM-phd-course/extras/ex_pca-efa-cfa_overview.html#/title-slide)
+
+## Geographical variability
+
+-   **Geographical variability of test anxiety** - [ECP 26](https://feracotommaso.github.io/Slides/fis/ecp26.html)
+
 ::: {style="font-size:11px;"}
 GitHub repository: <https://github.com/feracotommaso/Slides>
 
